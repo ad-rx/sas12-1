@@ -1,2036 +1,1096 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TKA Matematika — Transformasi, Lingkaran & Pencacahan (Asesmen Interaktif)</title>
-
-<script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['\\(', '\\)']],
-      displayMath: [['\\[', '\\]']]
-    },
-    svg: { fontCache: 'global' },
-    options: {
-      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'option', 'select', 'input']
-    }
-  };
-</script>
-
-<script id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-<style>
-/* ============================ RESET & VARIABEL ============================ */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --primary: #1d4ed8;
-  --primary-dark: #1e3a8a;
-  --primary-light: #dbeafe;
-  --primary-soft: #eff6ff;
-  --bg: #eef2f7;
-  --card: #ffffff;
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: #dbe2ea;
-  --success: #15803d;
-  --success-bg: #dcfce7;
-  --danger: #b91c1c;
-  --danger-bg: #fee2e2;
-  --warn: #b45309;
-  --warn-bg: #fef3c7;
-  --radius: 14px;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
-  --shadow: 0 1px 3px rgba(15, 23, 42, .08), 0 10px 28px -14px rgba(15, 23, 42, .28);
-}
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-}
-
-/* ============================ TOP BAR ============================ */
-.topbar {
-  background: linear-gradient(135deg, #16306e 0%, #1d4ed8 55%, #2b6ef0 100%);
-  color: #fff;
-  padding: 10px 18px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  box-shadow: 0 3px 16px rgba(15, 23, 42, .28);
-}
-
-.brand { display: flex; align-items: center; gap: 12px; }
-
-.brand-badge {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  object-fit: contain;
-  flex-shrink: 0;
-  display: block;
-  background: rgba(255, 255, 255, .12);
-  padding: 3px;
-}
-
-.brand-title { font-size: 15px; font-weight: 700; line-height: 1.2; }
-.brand-sub { font-size: 11.5px; opacity: .82; line-height: 1.3; }
-
-.topbar-spacer { flex: 1; }
-
-.user-chip {
-  display: flex; align-items: center; gap: 9px;
-  background: rgba(255, 255, 255, .15);
-  border: 1px solid rgba(255, 255, 255, .26);
-  padding: 5px 14px 5px 6px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  max-width: 260px;
-  min-width: 0;
-}
-.user-avatar {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .3);
-  display: grid; place-items: center;
-  font-weight: 800; font-size: 13px;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-.user-name {
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  line-height: 1.2;
-}
-.user-role {
-  display: block;
-  font-size: 9.5px;
-  font-weight: 600;
-  opacity: .75;
-  text-transform: uppercase;
-  letter-spacing: .7px;
-}
-
-.timer {
-  display: flex; align-items: center; gap: 9px;
-  background: rgba(255, 255, 255, .15);
-  border: 1px solid rgba(255, 255, 255, .26);
-  padding: 7px 15px;
-  border-radius: 10px;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: .6px;
-  transition: background .3s;
-  flex-shrink: 0;
-}
-.timer.warning {
-  background: #dc2626;
-  border-color: #f87171;
-  animation: pulse 1.4s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .72; }
-}
-.timer-label { font-size: 10.5px; font-weight: 600; opacity: .8; letter-spacing: .8px; text-transform: uppercase; }
-
-/* ============================ LAYOUT ============================ */
-.layout {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 20px 16px 40px;
-  display: grid;
-  grid-template-columns: 252px minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
-}
-
-/* ============================ SIDEBAR ============================ */
-.sidebar {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow-sm);
-  position: sticky;
-  top: 78px;
-}
-
-.side-head {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .9px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-
-.side-peserta {
-  display: flex; align-items: center; gap: 9px;
-  background: var(--primary-soft);
-  border: 1px solid #c7dbfe;
-  border-radius: 10px;
-  padding: 9px 11px;
-  margin-bottom: 14px;
-  font-size: 12.5px;
-  min-width: 0;
-}
-.side-peserta .avatar-sm {
-  width: 26px; height: 26px; border-radius: 50%;
-  background: var(--primary); color: #fff;
-  display: grid; place-items: center;
-  font-weight: 800; font-size: 11px;
-  flex-shrink: 0;
-  text-transform: uppercase;
-}
-.side-peserta .nm {
-  font-weight: 700; color: var(--primary-dark);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-
-.nav-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 7px;
-  margin-bottom: 16px;
-}
-
-.nav-btn {
-  aspect-ratio: 1;
-  border: 1.5px solid var(--border);
-  background: #fff;
-  border-radius: 9px;
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all .16s ease;
-  font-family: inherit;
-  display: grid; place-items: center;
-}
-.nav-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
-.nav-btn.answered { background: var(--primary); border-color: var(--primary); color: #fff; }
-.nav-btn.flagged { background: var(--warn-bg); border-color: #f59e0b; color: var(--warn); }
-.nav-btn.flagged.answered { background: linear-gradient(135deg, var(--primary) 55%, #f59e0b 55%); color: #fff; }
-.nav-btn.current {
-  outline: 3px solid #93c5fd;
-  outline-offset: 1px;
-  transform: scale(1.06);
-}
-
-.legend {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 11.5px;
-  color: var(--muted);
-  border-top: 1px dashed var(--border);
-  padding-top: 12px;
-  margin-bottom: 14px;
-}
-.legend div { display: flex; align-items: center; gap: 8px; }
-.dot {
-  width: 13px; height: 13px;
-  border-radius: 4px;
-  border: 1.5px solid var(--border);
-  background: #fff;
-  flex-shrink: 0;
-}
-.dot.answered { background: var(--primary); border-color: var(--primary); }
-.dot.flagged { background: var(--warn-bg); border-color: #f59e0b; }
-
-.progress-text {
-  font-size: 12px;
-  color: var(--muted);
-  text-align: center;
-  margin-top: 10px;
-  font-weight: 600;
-}
-
-.btn-finish {
-  width: 100%;
-  padding: 11px;
-  border-radius: 10px;
-  border: none;
-  background: #0f172a;
-  color: #fff;
-  font-weight: 700;
-  font-size: 13.5px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background .16s, transform .16s;
-}
-.btn-finish:hover { background: #1e293b; transform: translateY(-1px); }
-
-/* ============================ COPYRIGHT ============================ */
-.copyright {
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: .2px;
-}
-
-.start-copyright {
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--border);
-}
-
-.side-copyright {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px dashed var(--border);
-  font-size: 11px;
-}
-
-/* ============================ KONTEN SOAL ============================ */
-.content { min-width: 0; }
-
-.q-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 26px 28px 30px;
-  animation: fadeUp .28s ease;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.q-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-}
-
-.q-number {
-  background: var(--primary);
-  color: #fff;
-  font-weight: 800;
-  font-size: 13px;
-  padding: 5px 14px;
-  border-radius: 20px;
-  letter-spacing: .4px;
-}
-
-.q-type {
-  background: var(--primary-soft);
-  color: var(--primary-dark);
-  font-weight: 700;
-  font-size: 11.5px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1px solid #c7dbfe;
-}
-
-.q-topic {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
-  margin-left: auto;
-}
-
-.stimulus {
-  font-size: 15.5px;
-  line-height: 1.85;
-  margin-bottom: 22px;
-}
-.stimulus p { margin-bottom: 10px; }
-
-/* -------- Pilihan Ganda -------- */
-.options { display: flex; flex-direction: column; gap: 10px; }
-
-.option {
-  display: flex;
-  align-items: flex-start;
-  gap: 13px;
-  width: 100%;
-  text-align: left;
-  background: #fff;
-  border: 1.8px solid var(--border);
-  border-radius: 11px;
-  padding: 13px 16px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 15px;
-  color: var(--text);
-  transition: all .16s ease;
-  line-height: 1.6;
-}
-.option:hover { border-color: #93c5fd; background: var(--primary-soft); }
-.option.selected {
-  border-color: var(--primary);
-  background: var(--primary-soft);
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, .1);
-}
-
-.opt-key {
-  width: 27px; height: 27px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  border: 1.8px solid var(--border);
-  display: grid; place-items: center;
-  font-weight: 800;
-  font-size: 13px;
-  color: var(--muted);
-  transition: all .16s;
-  margin-top: 1px;
-}
-.option.selected .opt-key {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
-}
-.opt-text { flex: 1; }
-
-/* -------- Tabel Benar/Salah & Ya/Tidak -------- */
-.table-wrap { overflow-x: auto; margin-top: 4px; }
-
-.bs-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  font-size: 14.5px;
-}
-.bs-table thead th {
-  background: #f1f5fb;
-  font-size: 12.5px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  color: var(--muted);
-  padding: 11px 12px;
-  text-align: center;
-  border-bottom: 1.5px solid var(--border);
-}
-.bs-table thead th:first-child { text-align: left; }
-.bs-table tbody td {
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
-.bs-table tbody tr:last-child td { border-bottom: none; }
-.bs-table tbody tr:nth-child(even) { background: #fafbfe; }
-.bs-table td.cell { width: 92px; text-align: center; }
-.bs-table td.stmt { line-height: 1.7; }
-
-.cell-btn {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  border: 1.8px solid var(--border);
-  background: #fff;
-  cursor: pointer;
-  position: relative;
-  transition: all .16s;
-  padding: 0;
-}
-.cell-btn:hover { border-color: #93c5fd; background: var(--primary-soft); }
-.cell-btn::after {
-  content: '';
-  position: absolute;
-  inset: 7px;
-  border-radius: 50%;
-  background: var(--primary);
-  transform: scale(0);
-  transition: transform .16s ease;
-}
-.cell-btn.selected { border-color: var(--primary); }
-.cell-btn.selected::after { transform: scale(1); }
-
-/* -------- Menjodohkan -------- */
-.match-list { display: flex; flex-direction: column; gap: 12px; }
-
-.match-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 220px;
-  gap: 14px;
-  align-items: center;
-  background: #fff;
-  border: 1.5px solid var(--border);
-  border-radius: 11px;
-  padding: 12px 15px;
-}
-
-.match-premise { display: flex; align-items: flex-start; gap: 11px; font-size: 14.8px; line-height: 1.7; }
-
-.premise-num {
-  width: 25px; height: 25px;
-  flex-shrink: 0;
-  border-radius: 7px;
-  background: var(--primary-soft);
-  color: var(--primary);
-  border: 1px solid #c7dbfe;
-  display: grid; place-items: center;
-  font-weight: 800;
-  font-size: 12px;
-  margin-top: 2px;
-}
-
-.match-select {
-  width: 100%;
-  padding: 9px 11px;
-  border-radius: 9px;
-  border: 1.8px solid var(--border);
-  background: #fff;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--text);
-  cursor: pointer;
-  transition: border-color .16s, box-shadow .16s;
-}
-.match-select:hover { border-color: #93c5fd; }
-.match-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(29, 78, 216, .12); }
-.match-select.has-value { border-color: var(--primary); background: var(--primary-soft); font-weight: 600; }
-
-/* -------- Isian Singkat -------- */
-.isian-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  background: var(--primary-soft);
-  border: 1.5px dashed #a9c8fb;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 6px;
-}
-.isian-label { font-weight: 700; font-size: 14.5px; color: var(--primary-dark); }
-.isian-input {
-  flex: 1;
-  min-width: 200px;
-  padding: 12px 16px;
-  font-size: 17px;
-  font-weight: 700;
-  font-family: inherit;
-  border: 2px solid #a9c8fb;
-  border-radius: 10px;
-  background: #fff;
-  color: var(--text);
-  letter-spacing: .5px;
-}
-.isian-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(29, 78, 216, .13);
-}
-.isian-unit { font-weight: 700; color: var(--primary-dark); font-size: 15px; }
-.isian-hint { font-size: 12.5px; color: var(--muted); width: 100%; margin-top: 2px; }
-
-/* ============================ AKSI BAWAH ============================ */
-.q-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 18px;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 11px 22px;
-  border-radius: 10px;
-  border: 1.8px solid transparent;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .16s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-.btn:disabled { opacity: .45; cursor: not-allowed; }
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
-.btn-ghost { background: #fff; border-color: var(--border); color: var(--text); }
-.btn-ghost:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
-.btn-flag { background: #fff; border-color: #fcd34d; color: var(--warn); margin-left: auto; }
-.btn-flag:hover { background: var(--warn-bg); }
-.btn-flag.active { background: #f59e0b; border-color: #f59e0b; color: #fff; }
-.btn-lg { padding: 14px 40px; font-size: 15.5px; border-radius: 12px; }
-
-/* ============================ OVERLAY MULAI ============================ */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(135deg, #0f2557 0%, #1d4ed8 100%);
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  z-index: 200;
-  overflow-y: auto;
-}
-.overlay.hidden { display: none; }
-
-.start-card {
-  background: #fff;
-  border-radius: 20px;
-  padding: 34px 40px 32px;
-  max-width: 560px;
-  width: 100%;
-  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, .5);
-  text-align: center;
-  animation: fadeUp .4s ease;
-}
-
-.start-badge {
-  width: 62px;
-  height: 62px;
-  margin: 0 auto 16px;
-  border-radius: 12px;
-  object-fit: contain;
-  display: block;
-}
-
-.start-card h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-.start-card h2 {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--primary);
-  margin-bottom: 20px;
-  letter-spacing: .4px;
-}
-.start-list {
-  text-align: left;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  margin-bottom: 20px;
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 20px;
-  font-size: 13.8px;
-  color: #334155;
-}
-.start-list li { padding-left: 24px; position: relative; line-height: 1.55; }
-.start-list li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: var(--primary);
-  font-weight: 900;
-}
-
-.name-field { text-align: left; margin-bottom: 22px; }
-.name-field label {
-  display: block;
-  font-size: 11.5px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .9px;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-.name-field label span { color: var(--danger); }
-.name-input {
-  width: 100%;
-  padding: 13px 16px;
-  border: 2px solid var(--border);
-  border-radius: 11px;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-  background: #fff;
-  transition: border-color .16s, box-shadow .16s;
-}
-.name-input::placeholder { font-weight: 500; color: #94a3b8; }
-.name-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(29, 78, 216, .13);
-}
-.name-input.error {
-  border-color: var(--danger);
-  background: #fff5f5;
-  animation: shake .35s ease;
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
-}
-.name-error {
-  display: none;
-  margin-top: 7px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--danger);
-}
-.name-error.show { display: block; }
-
-/* ============================ HASIL ============================ */
-.result { animation: fadeUp .35s ease; }
-
-.result-hero {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 30px;
-  display: flex;
-  align-items: flex-start;
-  gap: 34px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-
-.score-ring {
-  width: 148px; height: 148px;
-  border-radius: 50%;
-  background: conic-gradient(var(--primary) calc(var(--pct) * 1%), #e2e8f0 0);
-  display: grid; place-items: center;
-  position: relative;
-  flex-shrink: 0;
-  transition: background .8s ease;
-}
-.score-ring::before {
-  content: '';
-  position: absolute;
-  inset: 13px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: inset 0 2px 8px rgba(15, 23, 42, .07);
-}
-.score-ring > div { position: relative; text-align: center; line-height: 1; }
-.score-ring span {
-  font-size: 38px;
-  font-weight: 900;
-  color: var(--primary);
-  line-height: 1;
-}
-.score-ring small {
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 700;
-  display: block;
-  text-align: center;
-  margin-top: 4px;
-}
-
-.result-info { flex: 1; min-width: 240px; }
-.result-info h2 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
-
-.identity {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: 11px;
-  padding: 13px 16px;
-  margin-bottom: 14px;
-  font-size: 13.5px;
-}
-.id-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: baseline;
-}
-.id-row span {
-  color: var(--muted);
-  font-weight: 600;
-  flex-shrink: 0;
-  font-size: 12.5px;
-}
-.id-row strong {
-  color: var(--text);
-  text-align: right;
-  font-weight: 700;
-  overflow-wrap: anywhere;
-}
-.id-row.highlight strong { color: var(--primary); }
-
-.result-info p { font-size: 14.5px; color: #334155; margin-bottom: 4px; }
-.result-info strong { color: var(--primary); }
-
-.predikat {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 6px 18px;
-  border-radius: 20px;
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: .3px;
-}
-.predikat.sangat { background: var(--success-bg); color: var(--success); }
-.predikat.baik { background: var(--primary-soft); color: var(--primary-dark); }
-.predikat.cukup { background: var(--warn-bg); color: var(--warn); }
-.predikat.kurang { background: var(--danger-bg); color: var(--danger); }
-
-.review-title {
-  font-size: 15px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .8px;
-  color: var(--muted);
-  margin: 26px 0 12px;
-  padding-left: 4px;
-}
-
-.review-item {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-left: 5px solid var(--border);
-  border-radius: 11px;
-  padding: 16px 20px;
-  margin-bottom: 11px;
-  box-shadow: var(--shadow-sm);
-}
-.review-item.correct { border-left-color: var(--success); }
-.review-item.wrong { border-left-color: var(--danger); }
-.review-item.partial { border-left-color: #f59e0b; }
-
-.review-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-.review-num {
-  background: #f1f5f9;
-  color: var(--text);
-  font-weight: 800;
-  font-size: 12.5px;
-  padding: 3px 11px;
-  border-radius: 20px;
-}
-.review-status { font-weight: 800; font-size: 12.5px; }
-.review-status.correct { color: var(--success); }
-.review-status.wrong { color: var(--danger); }
-.review-status.partial { color: #b45309; }
-.review-type { margin-left: auto; font-size: 11.5px; color: var(--muted); font-weight: 600; }
-
-.review-q { font-size: 14px; line-height: 1.75; margin-bottom: 10px; color: #1e293b; }
-
-.answer-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.answer-box {
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 9px 13px;
-  font-size: 13.3px;
-  line-height: 1.6;
-}
-.answer-box b { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: .7px; color: var(--muted); margin-bottom: 3px; }
-.answer-box.user { background: var(--primary-soft); border-color: #c7dbfe; }
-.answer-box.key { background: var(--success-bg); border-color: #86efac; }
-
-.mini { padding: 2px 0; font-size: 13.2px; line-height: 1.6; }
-.mini b { color: var(--primary-dark); }
-
-.pembahasan {
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  border-radius: 9px;
-  padding: 10px 14px;
-  font-size: 13.4px;
-  line-height: 1.7;
-  color: #78350f;
-}
-.pembahasan b { color: #92400e; }
-
-.result-actions { margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; }
-
-/* ============================ PRINT HEADER ============================ */
-.print-header { display: none; }
-
-/* ============================ FALLBACK MATH ============================ */
-.math-frac {
-  display: inline-flex;
-  flex-direction: column;
-  vertical-align: middle;
-  text-align: center;
-  margin: 0 .18em;
-  font-size: .95em;
-}
-.math-num { border-bottom: 1.2px solid currentColor; padding: 0 .28em; line-height: 1.25; }
-.math-den { padding: 0 .28em; line-height: 1.25; }
-.math-root { white-space: nowrap; }
-.math-root .math-rad { border-top: 1.2px solid currentColor; padding: 0 .12em; margin-left: .05em; }
-.math-cases { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: left; padding-left: .3em; }
-.math-case-row { display: block; white-space: nowrap; }
-.math-display { display: block; text-align: center; margin: 10px 0; }
-
-/* ============================ RESPONSIF ============================ */
-@media (max-width: 980px) {
-  .user-chip { max-width: 180px; }
-}
-
-@media (max-width: 880px) {
-  .layout { grid-template-columns: 1fr; padding: 14px 12px 40px; gap: 14px; }
-  .sidebar { position: static; }
-  .nav-grid {
-    display: flex;
-    overflow-x: auto;
-    gap: 7px;
-    padding-bottom: 8px;
-    scrollbar-width: thin;
-  }
-  .nav-btn { flex: 0 0 auto; width: 42px; height: 42px; aspect-ratio: auto; }
-  .legend { flex-direction: row; flex-wrap: wrap; gap: 14px; }
-  .q-card { padding: 20px 17px 24px; }
-  .match-row { grid-template-columns: 1fr; gap: 9px; }
-  .answer-grid { grid-template-columns: 1fr; }
-  .brand-sub { display: none; }
-  .timer { font-size: 14px; padding: 6px 11px; }
-  .timer-label { display: none; }
-  .user-chip { max-width: 130px; padding: 4px 10px 4px 5px; font-size: 12px; }
-  .user-role { display: none; }
-  .result-hero { justify-content: center; text-align: left; gap: 22px; }
-  .start-card { padding: 28px 22px; }
-  .btn { flex: 1; justify-content: center; }
-}
-
-@media (max-width: 560px) {
-  .user-chip { max-width: 110px; }
-  .user-name { font-size: 12px; }
-}
-
-/* ============================ CETAK ============================ */
-@media print {
-  @page { margin: 14mm 12mm; }
-  body { background: #fff; font-size: 12px; }
-  .topbar, .sidebar, .q-actions, .overlay, .result-actions { display: none !important; }
-  .layout { display: block; padding: 0; max-width: 100%; }
-  .print-header {
-    display: block;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 2.5px solid #0f172a;
-  }
-  .print-header h2 { font-size: 17px; letter-spacing: .5px; margin-bottom: 8px; text-transform: uppercase; }
-  .print-header .ph-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 24px; font-size: 12px; }
-  .print-header .ph-row { display: flex; gap: 6px; }
-  .print-header .ph-row span { min-width: 108px; color: #475569; }
-  .print-header .ph-row strong { color: #0f172a; }
-  .result-hero { border: 1.5px solid #cbd5e1; box-shadow: none; padding: 16px; gap: 20px; break-inside: avoid; }
-  .score-ring { width: 112px; height: 112px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .score-ring::before { inset: 10px; }
-  .score-ring span { font-size: 30px; }
-  .identity, .predikat, .answer-box, .pembahasan { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .review-item { break-inside: avoid; page-break-inside: avoid; box-shadow: none; }
-  .review-title { margin-top: 18px; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen SAS Matematika - Transformasi, Lingkaran & Kombinatorika Kelas XII</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .option-card:hover { border-color: #0284c7; background-color: #f0f9ff; }
+        .option-card.selected {
+            border-color: #0284c7;
+            background-color: #e0f2fe;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+        }
+        .copyright-text { text-align: center; font-size: 12px; font-weight: 600; color: #94a3b8; letter-spacing: 0.2px; }
+        .copyright-sidebar { font-size: 11px; margin-top: 16px; padding-top: 16px; border-top: 1px dashed #e2e8f0; }
+        .copyright-start { margin-top: 16px; padding-top: 14px; border-top: 1px dashed #e2e8f0; }
+    </style>
 </head>
-<body>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
-<header class="topbar">
-  <div class="brand">
-    <img class="brand-badge"
-         src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDXJeJJ9DWykQVF58kDp_k3wEhCESgfgjq9XyRyik147AC3z2mTULQkwi0aVbl_N8fhzgzqo2TC5qkg2TGYwuL0UuGf9V0d06WE2vcwkYBoVR1kx-b9g5RGYq4BTuAbtKG3ZyL13chTY_lYQWGXHrtq8eVraaj38e9kICAXBqb9Jo88c3y6hyphenhyphen0NYxcNQ4/s1600/Dinamis.png"
-         alt="Logo TKA">
-    <div class="brand-text">
-      <div class="brand-title">Tes Kemampuan Akademik</div>
-      <div class="brand-sub">Matematika Wajib · Transformasi, Lingkaran &amp; Pencacahan</div>
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/30 overflow-hidden flex-shrink-0">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDXJeJJ9DWykQVF58kDp_k3wEhCESgfgjq9XyRyik147AC3z2mTULQkwi0aVbl_N8fhzgzqo2TC5qkg2TGYwuL0UuGf9V0d06WE2vcwkYBoVR1kx-b9g5RGYq4BTuAbtKG3ZyL13chTY_lYQWGXHrtq8eVraaj38e9kICAXBqb9Jo88c3y6hyphenhyphen0NYxcNQ4/s1600/Dinamis.png"
+                         alt="Logo TKA" class="w-full h-full object-contain p-1">
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">Asesmen SAS Matematika XII</h1>
+                    <p class="text-xs text-slate-400">Pusmendik Kemendikdasmen • Kelas XII</p>
+                </div>
+            </div>
+
+            <div id="header-status" class="hidden flex items-center gap-4">
+                <div class="bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 hidden sm:block">
+                    <span class="text-xs text-slate-400 block">Peserta</span>
+                    <span id="display-user-name" class="text-sm font-semibold text-sky-400">---</span>
+                </div>
+                <div class="bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-xl flex items-center gap-2">
+                    <i class="fa-regular fa-clock text-amber-500 animate-pulse"></i>
+                    <div>
+                        <span class="text-[10px] text-amber-400 block font-medium leading-none">SISA WAKTU</span>
+                        <span id="timer" class="text-sm font-extrabold text-amber-500 tracking-wider">75:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- 1. SCREEN INPUT IDENTITAS -->
+        <section id="welcome-screen" class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden my-4">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 sm:p-8 text-white relative">
+                <div class="relative z-10 flex flex-col items-center text-center">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDXJeJJ9DWykQVF58kDp_k3wEhCESgfgjq9XyRyik147AC3z2mTULQkwi0aVbl_N8fhzgzqo2TC5qkg2TGYwuL0UuGf9V0d06WE2vcwkYBoVR1kx-b9g5RGYq4BTuAbtKG3ZyL13chTY_lYQWGXHrtq8eVraaj38e9kICAXBqb9Jo88c3y6hyphenhyphen0NYxcNQ4/s1600/Dinamis.png"
+                         alt="Logo TKA" class="w-16 h-16 object-contain mb-3 drop-shadow-xl">
+                    <span class="bg-sky-400/30 text-sky-100 text-xs font-semibold px-3 py-1 rounded-full border border-sky-300/30">Summative Assessment</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mt-3">Sumatif Akhir Semester (SAS)</h2>
+                    <p class="text-sky-100 text-sm mt-1">Materi: Transformasi Geometri, Lingkaran &amp; Kombinatorika</p>
+                </div>
+            </div>
+
+            <form id="identity-form" class="p-6 sm:p-8 space-y-5" onsubmit="startExam(event)">
+                <div class="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-xl text-xs sm:text-sm flex gap-3">
+                    <i class="fa-solid fa-circle-info text-amber-600 text-lg flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <strong>Petunjuk Pengerjaan:</strong>
+                        <ul class="list-disc list-inside mt-1 space-y-0.5 text-amber-700">
+                            <li>Total 25 Soal (10 PG, 5 PG Kompleks, 5 Menjodohkan, 5 Isian Singkat).</li>
+                            <li>Waktu pengerjaan adalah 75 Menit.</li>
+                            <li>Isi data diri dengan benar sebelum memulai ujian.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="input-name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Lengkap Siswa <span class="text-red-500">*</span></label>
+                    <input type="text" id="input-name" required placeholder="Contoh: Muhammad Rizky Febrian"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-800 text-sm outline-none transition">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="input-class" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kelas / Tingkat <span class="text-red-500">*</span></label>
+                        <select id="input-class" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-800 text-sm outline-none transition">
+                            <option value="">-- Pilih Kelas --</option>
+                            <option value="X">X</option>
+                            <option value="XI">XI</option>
+                            <option value="XII">XII</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="input-absen" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nomor Absen <span class="text-red-500">*</span></label>
+                        <input type="number" id="input-absen" min="1" max="50" required placeholder="Contoh: 18"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-800 text-sm outline-none transition">
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-sky-600/30 transition duration-200 flex items-center justify-center gap-2 group">
+                        <span>Mulai Pengerjaan Ujian</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition duration-150"></i>
+                    </button>
+                </div>
+
+                <div class="copyright-text copyright-start">
+                    Copyright © : <span class="copy-year"></span> | Rahadi S.
+                </div>
+            </form>
+        </section>
+
+        <!-- 2. SCREEN UJIAN -->
+        <section id="exam-screen" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+            <div class="lg:col-span-3 space-y-5">
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between gap-4">
+                    <div class="w-full">
+                        <div class="flex justify-between text-xs text-slate-500 font-semibold mb-1.5">
+                            <span id="progress-text">Progres: 0 / 25 Terjawab</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div id="progress-bar-fill" class="bg-sky-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="question-container" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 min-h-[420px] flex flex-col justify-between">
+                </div>
+
+                <div class="flex items-center justify-between gap-3">
+                    <button id="btn-prev" onclick="navigateQuestion(-1)" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-xl font-semibold text-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        <span>Sebelumnya</span>
+                    </button>
+                    <button id="btn-next" onclick="navigateQuestion(1)" class="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-md transition flex items-center gap-2">
+                        <span>Selanjutnya</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-5">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center justify-between">
+                        <span>Peta Nomor Soal</span>
+                        <i class="fa-solid fa-grip text-slate-400"></i>
+                    </h3>
+
+                    <div id="question-grid" class="grid grid-cols-5 gap-2 custom-scrollbar max-h-[320px] overflow-y-auto p-1">
+                    </div>
+
+                    <div class="mt-5 pt-4 border-t border-slate-100 space-y-2 text-xs">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-4 h-4 rounded bg-sky-600 text-white text-[10px] font-bold flex items-center justify-center">N</span>
+                            <span class="text-slate-600">Sedang Dibuka</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-4 h-4 rounded bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center"><i class="fa-solid fa-check"></i></span>
+                            <span class="text-slate-600">Sudah Dijawab</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-4 h-4 rounded bg-slate-100 border border-slate-300 text-slate-600 text-[10px] font-bold flex items-center justify-center">N</span>
+                            <span class="text-slate-600">Belum Dijawab</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button onclick="confirmSubmit()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Selesaikan Ujian</span>
+                        </button>
+                    </div>
+
+                    <div class="copyright-text copyright-sidebar">
+                        Copyright © : <span class="copy-year"></span> | Rahadi S.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SCREEN RESULT -->
+        <section id="result-screen" class="hidden max-w-4xl mx-auto space-y-6">
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden p-6 sm:p-8 text-center relative">
+                <div class="inline-block bg-sky-100 text-sky-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-3">Laporan Hasil Asesmen</div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Nilai Akhir SAS Matematika XII</h2>
+                <p id="result-user-info" class="text-slate-500 text-sm mt-1">Siswa: --- | Kelas: ---</p>
+
+                <div class="my-6 inline-flex items-center justify-center p-6 bg-slate-50 rounded-full border-4 border-sky-500 shadow-inner">
+                    <div class="text-center">
+                        <span id="final-score" class="text-5xl font-black text-slate-800 block">0</span>
+                        <span class="text-xs text-slate-400 font-semibold uppercase tracking-widest">Skor Total (100)</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl mx-auto text-left">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-xs text-slate-500 block">Jawaban Benar</span>
+                        <span id="stat-correct" class="text-lg font-bold text-emerald-600">0</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-xs text-slate-500 block">Jawaban Salah</span>
+                        <span id="stat-wrong" class="text-lg font-bold text-red-500">0</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-xs text-slate-500 block">Akurasi</span>
+                        <span id="stat-accuracy" class="text-lg font-bold text-sky-600">0%</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-xs text-slate-500 block">Waktu Digunakan</span>
+                        <span id="stat-time" class="text-lg font-bold text-amber-600">--:--</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-center gap-3">
+                    <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Cetak Laporan</span>
+                    </button>
+                    <button onclick="location.reload()" class="bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Ulangi Tes</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-sky-600"></i>
+                    <span>Pembahasan Kunci Jawaban Lengkap</span>
+                </h3>
+                <div id="discussion-list" class="space-y-4">
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="submit-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 text-center space-y-4">
+            <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800">Selesaikan Ujian Sekarang?</h3>
+            <p id="modal-warning-text" class="text-sm text-slate-600">Pastikan Anda telah memeriksa kembali seluruh jawaban sebelum mengirimkan.</p>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeModal()" class="w-1/2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition">Kembali Periksa</button>
+                <button onclick="processSubmit()" class="w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow-md">Ya, Selesai</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="topbar-spacer"></div>
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            &copy; <span class="copy-year"></span> Asesmen SAS Matematika SMA Kelas XII • Berdasarkan Kurikulum Merdeka (Kemendikdasmen)
+        </div>
+    </footer>
 
-  <div class="user-chip" id="userChip" style="display:none">
-    <span class="user-avatar" id="userAvatar">?</span>
-    <span class="user-name">
-      <span class="user-role">Peserta</span>
-      <span id="userName">—</span>
-    </span>
-  </div>
+    <script>
+        // -------------------------------------------------------------
+        // BANK SOAL SAS MATEMATIKA KELAS XII
+        // Transformasi Geometri, Lingkaran & Kombinatorika
+        // -------------------------------------------------------------
+        const questions = [
+            // --- 10 SOAL PILIHAN GANDA (1 - 10) ---
+            {
+                id: 1,
+                type: 'pg',
+                category: 'Translasi Titik',
+                question: 'Titik A(3, 5) ditranslasikan oleh T(-2, 1). Bayangan titik A adalah...',
+                options: ['(1, 6)', '(5, 4)', '(1, 4)', '(5, 6)', '(-1, 6)'],
+                answer: '(1, 6)',
+                explanation: 'Translasi: $A\'(x+a,\\ y+b)$.<br>$A\' = (3 + (-2),\\ 5 + 1) = (1,\\ 6)$.<br>Jadi bayangan A adalah (1, 6).'
+            },
+            {
+                id: 2,
+                type: 'pg',
+                category: 'Refleksi Sumbu X',
+                question: 'Titik B(5, -3) dicerminkan terhadap sumbu X. Bayangan titik B adalah...',
+                options: ['(-5, -3)', '(5, 3)', '(-5, 3)', '(5, -3)', '(3, 5)'],
+                answer: '(5, 3)',
+                explanation: 'Refleksi terhadap sumbu X: $(x, y) \\rightarrow (x, -y)$.<br>$B\' = (5, -(-3)) = (5, 3)$.'
+            },
+            {
+                id: 3,
+                type: 'pg',
+                category: 'Rotasi 90°',
+                question: 'Titik C(-4, 6) dirotasikan 90° berlawanan arah jarum jam terhadap pusat O(0,0). Bayangan titik C adalah...',
+                options: ['(6, 4)', '(4, -6)', '(-6, -4)', '(-4, -6)', '(6, -4)'],
+                answer: '(-6, -4)',
+                explanation: 'Rotasi 90° berlawanan arah jarum jam: $(x, y) \\rightarrow (-y, x)$.<br>$C\' = (-6, -4)$.'
+            },
+            {
+                id: 4,
+                type: 'pg',
+                category: 'Dilatasi Titik',
+                question: 'Titik D(8, 4) didilatasikan dengan pusat O(0,0) dan faktor skala $\\tfrac{1}{4}$. Bayangan titik D adalah...',
+                options: ['(32, 16)', '(4, 2)', '(8, 1)', '(2, 1)', '(1, 2)'],
+                answer: '(2, 1)',
+                explanation: 'Dilatasi pusat O dengan faktor skala $k$: $(x, y) \\rightarrow (kx, ky)$.<br>$D\' = \\left(\\tfrac{1}{4}\\cdot 8,\\ \\tfrac{1}{4}\\cdot 4\\right) = (2,\\ 1)$.'
+            },
+            {
+                id: 5,
+                type: 'pg',
+                category: 'Translasi Fungsi',
+                question: 'Fungsi $f(x) = 3x + 2$ ditranslasikan oleh $T(2, -4)$. Hasil translasi fungsi tersebut adalah...',
+                options: ['3x + 8', '3x - 4', '3x + 4', '3x - 6', '3x - 8'],
+                answer: '3x - 8',
+                explanation: 'Translasi $T(a,b)$ pada fungsi: $y = f(x-a) + b$.<br>$f(x-2) - 4 = 3(x-2) + 2 - 4 = 3x - 6 + 2 - 4 = 3x - 8$.'
+            },
+            {
+                id: 6,
+                type: 'pg',
+                category: 'Komposisi Translasi & Refleksi',
+                question: 'Titik E(2, 1) ditranslasikan oleh $T_1(1, -2)$ kemudian dicerminkan terhadap garis $y = x$. Bayangan akhir titik E adalah...',
+                options: ['(-1, 3)', '(3, -1)', '(1, -3)', '(-3, 1)', '(1, 3)'],
+                answer: '(-1, 3)',
+                explanation: '1) Translasi: $E\' = (2+1,\\ 1+(-2)) = (3, -1)$.<br>2) Refleksi $y = x$: $(x, y) \\rightarrow (y, x)$.<br>$E\'\' = (-1, 3)$.'
+            },
+            {
+                id: 7,
+                type: 'pg',
+                category: 'Panjang Busur Lingkaran',
+                question: 'Panjang busur lingkaran dengan jari-jari 21 cm dan sudut pusat 60° adalah... $\\left(\\pi = \\tfrac{22}{7}\\right)$',
+                options: ['11 cm', '22 cm', '44 cm', '66 cm', '33 cm'],
+                answer: '22 cm',
+                explanation: 'Panjang busur $= \\dfrac{\\theta}{360°} \\times 2\\pi r$<br>$= \\dfrac{60}{360} \\times 2 \\times \\dfrac{22}{7} \\times 21 = \\dfrac{1}{6} \\times 132 = 22$ cm.'
+            },
+            {
+                id: 8,
+                type: 'pg',
+                category: 'Luas Juring Lingkaran',
+                question: 'Luas juring lingkaran dengan jari-jari 14 cm dan sudut pusat 90° adalah... $\\left(\\pi = \\tfrac{22}{7}\\right)$',
+                options: ['77 cm²', '154 cm²', '308 cm²', '616 cm²', '38,5 cm²'],
+                answer: '154 cm²',
+                explanation: 'Luas juring $= \\dfrac{\\theta}{360°} \\times \\pi r^2$<br>$= \\dfrac{90}{360} \\times \\dfrac{22}{7} \\times 14^2 = \\dfrac{1}{4} \\times 616 = 154$ cm².'
+            },
+            {
+                id: 9,
+                type: 'pg',
+                category: 'Keliling Lingkaran',
+                question: 'Keliling lingkaran dengan diameter 28 cm adalah... $\\left(\\pi = \\tfrac{22}{7}\\right)$',
+                options: ['22 cm', '44 cm', '66 cm', '154 cm', '88 cm'],
+                answer: '88 cm',
+                explanation: 'Keliling $= \\pi d = \\dfrac{22}{7} \\times 28 = 22 \\times 4 = 88$ cm.'
+            },
+            {
+                id: 10,
+                type: 'pg',
+                category: 'Sudut Pusat & Sudut Keliling',
+                question: 'Jika sudut pusat 100°, maka sudut keliling yang menghadap busur yang sama adalah...',
+                options: ['100°', '200°', '25°', '40°', '50°'],
+                answer: '50°',
+                explanation: 'Sudut keliling $= \\tfrac{1}{2} \\times$ sudut pusat (menghadap busur sama).<br>Sudut keliling $= \\tfrac{1}{2} \\times 100° = 50°$.'
+            },
 
-  <div class="timer" id="timer">
-    <span class="timer-label">Sisa Waktu</span>
-    <span id="timerText">01:15:00</span>
-  </div>
-</header>
+            // --- 5 SOAL PILIHAN GANDA KOMPLEKS (11 - 15) ---
+            {
+                id: 11,
+                type: 'pg_kompleks_multi',
+                category: 'Analisis Kombinatorika',
+                question: 'Perhatikan pernyataan-pernyataan berikut. Manakah yang <b>BENAR</b>? (Pilih semua jawaban yang sesuai)',
+                options: [
+                    'Banyak cara menyusun 4 buku berbeda dalam rak adalah 24 cara.',
+                    'Nilai dari $C(6,3)$ adalah 20.',
+                    'Nilai dari $P(6,2)$ adalah 30.',
+                    'Banyak cara memilih 1 ketua dan 1 sekretaris dari 6 orang adalah 15 cara.'
+                ],
+                answer: [
+                    'Banyak cara menyusun 4 buku berbeda dalam rak adalah 24 cara.',
+                    'Nilai dari $C(6,3)$ adalah 20.',
+                    'Nilai dari $P(6,2)$ adalah 30.'
+                ],
+                explanation: '1) $4! = 24$ (BENAR).<br>2) $C(6,3) = \\dfrac{6!}{3!3!} = \\dfrac{6 \\times 5 \\times 4}{3 \\times 2 \\times 1} = 20$ (BENAR).<br>3) $P(6,2) = 6 \\times 5 = 30$ (BENAR).<br>4) Memilih ketua dan sekretaris memperhatikan urutan: $P(6,2) = 30$, bukan 15 (SALAH).'
+            },
+            {
+                id: 12,
+                type: 'pg_kompleks_table',
+                category: 'Evaluasi Transformasi Titik',
+                question: 'Tentukan kebenaran setiap pernyataan berikut berkaitan dengan transformasi titik!',
+                statements: [
+                    { text: 'Bayangan titik A(2, 3) oleh translasi T(1, -2) adalah (3, 1).', correct: 'BENAR' },
+                    { text: 'Bayangan titik B(-1, 4) oleh refleksi terhadap sumbu Y adalah (1, 4).', correct: 'BENAR' },
+                    { text: 'Bayangan titik C(3, -2) oleh rotasi 90° berlawanan arah jarum jam terhadap O(0,0) adalah (-2, -3).', correct: 'SALAH' }
+                ],
+                explanation: '1) $A\' = (2+1,\\ 3-2) = (3, 1)$ (BENAR).<br>2) Refleksi sumbu Y: $(x,y) \\rightarrow (-x, y)$, sehingga $B\' = (1, 4)$ (BENAR).<br>3) Rotasi 90° CCW: $(x, y) \\rightarrow (-y, x)$, sehingga $C\' = (2, 3)$, bukan (-2, -3). Jadi (SALAH).'
+            },
+            {
+                id: 13,
+                type: 'pg_kompleks_multi',
+                category: 'Analisis Lingkaran',
+                question: 'Diberikan pernyataan tentang unsur-unsur lingkaran dengan $\\pi = \\tfrac{22}{7}$. Manakah pernyataan yang <b>BENAR</b>?',
+                options: [
+                    'Keliling lingkaran dengan jari-jari 7 cm adalah 44 cm.',
+                    'Luas lingkaran dengan jari-jari 7 cm adalah 154 cm².',
+                    'Luas juring dengan sudut pusat 90° dan jari-jari 14 cm adalah 154 cm².',
+                    'Panjang busur dengan sudut pusat 120° dan jari-jari 21 cm adalah 66 cm.'
+                ],
+                answer: [
+                    'Keliling lingkaran dengan jari-jari 7 cm adalah 44 cm.',
+                    'Luas lingkaran dengan jari-jari 7 cm adalah 154 cm².',
+                    'Luas juring dengan sudut pusat 90° dan jari-jari 14 cm adalah 154 cm².'
+                ],
+                explanation: '1) $K = 2\\pi r = 2 \\times \\tfrac{22}{7} \\times 7 = 44$ cm (BENAR).<br>2) $L = \\pi r^2 = \\tfrac{22}{7} \\times 49 = 154$ cm² (BENAR).<br>3) $L_{juring} = \\tfrac{90}{360} \\times \\tfrac{22}{7} \\times 196 = 154$ cm² (BENAR).<br>4) Panjang busur $= \\tfrac{120}{360} \\times 2 \\times \\tfrac{22}{7} \\times 21 = \\tfrac{1}{3} \\times 132 = 44$ cm, bukan 66 cm (SALAH).'
+            },
+            {
+                id: 14,
+                type: 'pg_kompleks_table',
+                category: 'Evaluasi Transformasi Fungsi',
+                question: 'Tentukan kebenaran setiap pernyataan berikut berkaitan dengan transformasi fungsi!',
+                statements: [
+                    { text: 'Fungsi $f(x) = 2x + 3$ dicerminkan terhadap sumbu X menghasilkan $-2x - 3$.', correct: 'BENAR' },
+                    { text: 'Fungsi $f(x) = x + 4$ dicerminkan terhadap sumbu Y menghasilkan $-x + 4$.', correct: 'BENAR' },
+                    { text: 'Fungsi $f(x) = 3x - 1$ ditranslasikan oleh T(1, 2) menghasilkan $3x + 2$.', correct: 'SALAH' }
+                ],
+                explanation: '1) Refleksi sumbu X: $y = -f(x) = -(2x+3) = -2x-3$ (BENAR).<br>2) Refleksi sumbu Y: $y = f(-x) = (-x)+4 = -x+4$ (BENAR).<br>3) Translasi $T(1,2)$: $y = f(x-1)+2 = 3(x-1)-1+2 = 3x-2$. Jadi hasilnya $3x-2$, bukan $3x+2$ (SALAH).'
+            },
+            {
+                id: 15,
+                type: 'pg_kompleks_multi',
+                category: 'Analisis Kombinatorika Lanjutan',
+                question: 'Perhatikan pernyataan-pernyataan berikut. Manakah yang <b>BENAR</b>?',
+                options: [
+                    'Nilai $C(7,3) = 35$.',
+                    'Banyak susunan huruf dari kata "SOSO" adalah 6.',
+                    'Banyak cara duduk 5 orang berjajar jika 2 orang tertentu harus berdampingan adalah 48.',
+                    'Banyak cara memilih 3 siswa dari 7 siswa adalah 210.'
+                ],
+                answer: [
+                    'Nilai $C(7,3) = 35$.',
+                    'Banyak susunan huruf dari kata "SOSO" adalah 6.',
+                    'Banyak cara duduk 5 orang berjajar jika 2 orang tertentu harus berdampingan adalah 48.'
+                ],
+                explanation: '1) $C(7,3) = \\dfrac{7 \\times 6 \\times 5}{3 \\times 2 \\times 1} = 35$ (BENAR).<br>2) "SOSO": $\\dfrac{4!}{2! \\cdot 2!} = \\dfrac{24}{4} = 6$ (BENAR).<br>3) Anggap 2 orang sebagai 1 blok: $4! \\times 2! = 24 \\times 2 = 48$ (BENAR).<br>4) $C(7,3) = 35$, bukan 210 (SALAH).'
+            },
 
-<main class="layout" id="layout">
-  <aside class="sidebar">
-    <div class="side-head">Navigasi Soal</div>
+            // --- 5 SOAL MENJODOHKAN (16 - 20) ---
+            {
+                id: 16,
+                type: 'matching',
+                category: 'Menjodohkan Transformasi Titik',
+                question: 'Jodohkanlah titik awal dan jenis transformasinya dengan bayangan yang tepat!',
+                pairs: [
+                    { premise: 'A(3, 5) ditranslasi T(-2, 1)', target: '(1, 6)' },
+                    { premise: 'B(5, -3) dicerminkan sumbu X', target: '(5, 3)' },
+                    { premise: 'C(-4, 6) dirotasi 90° berlawanan arah jarum jam', target: '(-6, -4)' },
+                    { premise: 'D(8, 4) didilatasi skala 1/4', target: '(2, 1)' }
+                ],
+                explanation: '• A: $(3-2,\\ 5+1) = (1,6)$.<br>• B: $(5, -(-3)) = (5,3)$.<br>• C: $(-y, x) = (-6, -4)$.<br>• D: $(8 \\cdot \\tfrac14,\\ 4 \\cdot \\tfrac14) = (2,1)$.'
+            },
+            {
+                id: 17,
+                type: 'matching',
+                category: 'Menjodohkan Rumus Lingkaran',
+                question: 'Hubungkanlah unsur lingkaran di Kolom Kiri dengan rumus yang sesuai di Kolom Kanan!',
+                pairs: [
+                    { premise: 'Keliling lingkaran', target: '2πr' },
+                    { premise: 'Luas lingkaran', target: 'πr²' },
+                    { premise: 'Panjang busur lingkaran', target: '(θ/360) × 2πr' },
+                    { premise: 'Luas juring lingkaran', target: '(θ/360) × πr²' }
+                ],
+                explanation: '• Keliling = $2\\pi r$ atau $\\pi d$.<br>• Luas = $\\pi r^2$.<br>• Panjang busur = $\\dfrac{\\theta}{360°} \\times 2\\pi r$.<br>• Luas juring = $\\dfrac{\\theta}{360°} \\times \\pi r^2$.'
+            },
+            {
+                id: 18,
+                type: 'matching',
+                category: 'Menjodohkan Nilai Permutasi & Kombinasi',
+                question: 'Pasangkanlah ekspresi kombinatorika di Kolom Kiri dengan hasil nilainya di Kolom Kanan!',
+                pairs: [
+                    { premise: 'Nilai dari C(6, 3)', target: '20' },
+                    { premise: 'Nilai dari P(6, 2)', target: '30' },
+                    { premise: 'Nilai dari 4!', target: '24' },
+                    { premise: 'Nilai dari 7! / 5!', target: '42' }
+                ],
+                explanation: '• $C(6,3) = \\dfrac{6!}{3!3!} = 20$.<br>• $P(6,2) = 6 \\times 5 = 30$.<br>• $4! = 24$.<br>• $\\dfrac{7!}{5!} = 7 \\times 6 = 42$.'
+            },
+            {
+                id: 19,
+                type: 'matching',
+                category: 'Menjodohkan Transformasi Fungsi',
+                question: 'Hubungkanlah transformasi fungsi di Kolom Kiri dengan hasil bayangan fungsi yang benar di Kolom Kanan!',
+                pairs: [
+                    { premise: 'f(x) = 3x + 2 ditranslasi T(2, -4)', target: '3x - 8' },
+                    { premise: 'f(x) = 3x - 2 dicerminkan sumbu Y', target: '-3x - 2' },
+                    { premise: 'f(x) = 2x + 5 dicerminkan sumbu X', target: '-2x - 5' },
+                    { premise: 'f(x) = x² ditranslasi T(1, 2)', target: 'x² - 2x + 3' }
+                ],
+                explanation: '• $f(x-2)-4 = 3(x-2)+2-4 = 3x-8$.<br>• $f(-x) = 3(-x)-2 = -3x-2$.<br>• $-f(x) = -(2x+5) = -2x-5$.<br>• $f(x-1)+2 = (x-1)^2+2 = x^2-2x+3$.'
+            },
+            {
+                id: 20,
+                type: 'matching',
+                category: 'Menjodohkan Perhitungan Lingkaran',
+                question: 'Pasangkanlah perhitungan unsur lingkaran di Kolom Kiri dengan hasilnya di Kolom Kanan! $\\left(\\pi = \\tfrac{22}{7}\\right)$',
+                pairs: [
+                    { premise: 'Keliling lingkaran dengan r = 14 cm', target: '88 cm' },
+                    { premise: 'Luas lingkaran dengan r = 7 cm', target: '154 cm²' },
+                    { premise: 'Panjang busur 90° dengan r = 14 cm', target: '22 cm' },
+                    { premise: 'Luas juring 120° dengan r = 21 cm', target: '462 cm²' }
+                ],
+                explanation: '• $K = 2\\pi r = 2 \\cdot \\tfrac{22}{7} \\cdot 14 = 88$ cm.<br>• $L = \\pi r^2 = \\tfrac{22}{7} \\cdot 49 = 154$ cm².<br>• Busur $= \\tfrac{90}{360} \\cdot 2 \\cdot \\tfrac{22}{7} \\cdot 14 = 22$ cm.<br>• Juring $= \\tfrac{120}{360} \\cdot \\tfrac{22}{7} \\cdot 441 = 462$ cm².'
+            },
 
-    <div class="side-peserta" id="sidePeserta" style="display:none">
-      <span class="avatar-sm" id="sideAvatar">?</span>
-      <span class="nm" id="sideName">—</span>
-    </div>
+            // --- 5 SOAL ISIAN SINGKAT (21 - 25) ---
+            {
+                id: 21,
+                type: 'short_answer',
+                category: 'Panjang Busur Lingkaran',
+                question: 'Panjang busur lingkaran dengan jari-jari 14 cm dan sudut pusat 90° adalah... cm. $\\left(\\pi = \\tfrac{22}{7}\\right)$',
+                answer: '22',
+                explanation: 'Panjang busur $= \\dfrac{90}{360} \\times 2 \\times \\dfrac{22}{7} \\times 14 = \\dfrac{1}{4} \\times 88 = 22$ cm.'
+            },
+            {
+                id: 22,
+                type: 'short_answer',
+                category: 'Luas Juring Lingkaran',
+                question: 'Luas juring dengan jari-jari 21 cm dan sudut pusat 120° adalah... cm². $\\left(\\pi = \\tfrac{22}{7}\\right)$',
+                answer: '462',
+                explanation: 'Luas juring $= \\dfrac{120}{360} \\times \\dfrac{22}{7} \\times 21^2 = \\dfrac{1}{3} \\times \\dfrac{22}{7} \\times 441 = \\dfrac{1}{3} \\times 1386 = 462$ cm².'
+            },
+            {
+                id: 23,
+                type: 'short_answer',
+                category: 'Kombinasi',
+                question: 'Banyak cara memilih 3 siswa dari 7 siswa adalah... cara.',
+                answer: '35',
+                explanation: '$C(7,3) = \\dfrac{7!}{3! \\cdot 4!} = \\dfrac{7 \\times 6 \\times 5}{3 \\times 2 \\times 1} = 35$ cara.'
+            },
+            {
+                id: 24,
+                type: 'short_answer',
+                category: 'Sudut Pusat Juring',
+                question: 'Diketahui luas juring lingkaran adalah 616 cm² dan jari-jari 28 cm. Besar sudut pusat juring tersebut adalah... derajat. $\\left(\\pi = \\tfrac{22}{7}\\right)$',
+                answer: '90',
+                explanation: '$616 = \\dfrac{\\theta}{360°} \\times \\dfrac{22}{7} \\times 28^2$<br>$616 = \\dfrac{\\theta}{360°} \\times 2464$<br>$\\theta = \\dfrac{616 \\times 360°}{2464} = 90°$.'
+            },
+            {
+                id: 25,
+                type: 'short_answer',
+                category: 'Permutasi Jabatan',
+                question: 'Dalam sebuah kelas terdapat 12 siswa. Akan dipilih 3 siswa untuk menjadi ketua, sekretaris, dan bendahara. Banyak cara pemilihan yang mungkin adalah... cara.',
+                answer: '1320',
+                explanation: 'Pemilihan jabatan memperhatikan urutan, gunakan permutasi:<br>$P(12,3) = 12 \\times 11 \\times 10 = 1320$ cara.'
+            }
+        ];
 
-    <div class="nav-grid" id="navGrid"></div>
-    <div class="legend">
-      <div><span class="dot answered"></span> Sudah dijawab</div>
-      <div><span class="dot flagged"></span> Ragu-ragu</div>
-      <div><span class="dot"></span> Belum dijawab</div>
-    </div>
-    <button class="btn-finish" id="btnFinish">Selesai Ujian</button>
-    <div class="progress-text" id="progressText">0 / 25 terjawab</div>
-    <div class="copyright side-copyright">
-      Copyright © : <span class="copy-year"></span> | Rahadi S.
-    </div>
-  </aside>
+        // -------------------------------------------------------------
+        // STATE APLIKASI
+        // -------------------------------------------------------------
+        let currentUser = { name: '', class: '', absen: '' };
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let timerInterval = null;
+        let timeRemaining = 75 * 60;
+        let isSubmitted = false;
 
-  <section class="content">
-    <div class="q-card" id="qCard"></div>
-    <div class="q-actions">
-      <button class="btn btn-ghost" id="btnPrev">← Sebelumnya</button>
-      <button class="btn btn-flag" id="btnFlag">⚑ Ragu-ragu</button>
-      <button class="btn btn-primary" id="btnNext">Berikutnya →</button>
-    </div>
-  </section>
-</main>
+        // -------------------------------------------------------------
+        // LOGIKA FLOW EXAM
+        // -------------------------------------------------------------
+        function startExam(e) {
+            e.preventDefault();
+            currentUser.name = document.getElementById('input-name').value.trim();
+            currentUser.class = document.getElementById('input-class').value;
+            currentUser.absen = document.getElementById('input-absen').value;
 
-<div class="overlay" id="startOverlay">
-  <div class="start-card">
-    <img class="start-badge"
-         src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDXJeJJ9DWykQVF58kDp_k3wEhCESgfgjq9XyRyik147AC3z2mTULQkwi0aVbl_N8fhzgzqo2TC5qkg2TGYwuL0UuGf9V0d06WE2vcwkYBoVR1kx-b9g5RGYq4BTuAbtKG3ZyL13chTY_lYQWGXHrtq8eVraaj38e9kICAXBqb9Jo88c3y6hyphenhyphen0NYxcNQ4/s1600/Dinamis.png"
-         alt="Logo TKA">
-    <h1>Tes Kemampuan Akademik</h1>
-    <h2>TRANSFORMASI, LINGKARAN &amp; PENCACAHAN — MATEMATIKA WAJIB</h2>
+            if (!currentUser.name || !currentUser.class || !currentUser.absen) return;
 
-    <div class="name-field">
-      <label for="inputName">Nama Lengkap <span>*</span></label>
-      <input type="text" id="inputName" class="name-input" maxlength="60"
-             autocomplete="off" spellcheck="false"
-             placeholder="Ketik nama lengkap Anda">
-      <div class="name-error" id="nameError">Nama lengkap wajib diisi sebelum memulai ujian.</div>
-    </div>
+            document.getElementById('display-user-name').innerText = currentUser.name;
+            document.getElementById('header-status').classList.remove('hidden');
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('exam-screen').classList.remove('hidden');
 
-    <ul class="start-list">
-      <li><b>25 soal</b> memuat materi Transformasi Geometri, Lingkaran, dan Kaidah Pencacahan.</li>
-      <li><b>Waktu pengerjaan: 75 menit.</b> Waktu mulai berjalan saat tombol di bawah ditekan.</li>
-      <li>Jawaban dapat diubah kapan saja sebelum ujian diselesaikan.</li>
-      <li>Gunakan tombol <b>Ragu-ragu</b> untuk menandai soal yang ingin ditinjau kembali.</li>
-      <li>Skor dan pembahasan lengkap ditampilkan setelah ujian selesai.</li>
-    </ul>
+            renderGridNavigation();
+            loadQuestion(0);
+            startTimer();
+        }
 
-    <button class="btn btn-primary btn-lg" id="btnStart">Mulai Ujian</button>
-    <div class="copyright start-copyright">
-      Copyright © : <span class="copy-year"></span> | Rahadi S.
-    </div>
-  </div>
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                let mins = Math.floor(timeRemaining / 60);
+                let secs = timeRemaining % 60;
+                document.getElementById('timer').innerText =
+                    `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Waktu pengerjaan telah habis! Sistem akan mengirimkan jawaban Anda otomatis.");
+                    processSubmit();
+                }
+            }, 1000);
+        }
+
+        function renderGridNavigation() {
+            const grid = document.getElementById('question-grid');
+            grid.innerHTML = '';
+            questions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `grid-btn-${idx}`;
+                btn.innerText = idx + 1;
+                btn.onclick = () => loadQuestion(idx);
+                btn.className = `h-9 w-full rounded-lg font-bold text-xs flex items-center justify-center transition border ${getGridBtnStyle(idx)}`;
+                grid.appendChild(btn);
+            });
+        }
+
+        function getGridBtnStyle(idx) {
+            const qId = questions[idx].id;
+            const isAnswered = checkIsAnswered(qId);
+
+            if (idx === currentQuestionIndex) {
+                return 'bg-sky-600 text-white border-sky-600 ring-2 ring-sky-300 shadow';
+            } else if (isAnswered) {
+                return 'bg-emerald-500 text-white border-emerald-500';
+            } else {
+                return 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100';
+            }
+        }
+
+        function checkIsAnswered(qId) {
+            const ans = userAnswers[qId];
+            if (!ans) return false;
+            if (Array.isArray(ans)) return ans.length > 0;
+            if (typeof ans === 'object') return Object.keys(ans).length > 0;
+            return String(ans).trim() !== '';
+        }
+
+        function updateProgress() {
+            let answeredCount = 0;
+            questions.forEach(q => {
+                if (checkIsAnswered(q.id)) answeredCount++;
+            });
+
+            const percent = Math.round((answeredCount / questions.length) * 100);
+            document.getElementById('progress-text').innerText = `Progres: ${answeredCount} / ${questions.length} Terjawab`;
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+            document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+
+            questions.forEach((_, idx) => {
+                const btn = document.getElementById(`grid-btn-${idx}`);
+                if (btn) btn.className = `h-9 w-full rounded-lg font-bold text-xs flex items-center justify-center transition border ${getGridBtnStyle(idx)}`;
+            });
+        }
+
+        // -------------------------------------------------------------
+        // RENDER SOAL SESUAI TIPE
+        // -------------------------------------------------------------
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = questions[index];
+            const container = document.getElementById('question-container');
+
+            let html = `
+                <div>
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                        <span class="bg-sky-100 text-sky-800 text-xs font-bold px-3 py-1 rounded-md uppercase">Soal No. ${index + 1}</span>
+                        <span class="text-xs text-slate-500 font-medium"><i class="fa-solid fa-tag text-sky-500 mr-1"></i>${q.category}</span>
+                    </div>
+                    <div class="text-slate-800 font-medium text-base sm:text-lg leading-relaxed mb-6">
+                        ${q.question}
+                    </div>
+            `;
+
+            if (q.type === 'pg') {
+                html += renderPGOptions(q);
+            } else if (q.type === 'pg_kompleks_multi') {
+                html += renderPGMultiOptions(q);
+            } else if (q.type === 'pg_kompleks_table') {
+                html += renderPGTableOptions(q);
+            } else if (q.type === 'matching') {
+                html += renderMatchingOptions(q);
+            } else if (q.type === 'short_answer') {
+                html += renderShortAnswerInput(q);
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+
+            document.getElementById('btn-prev').disabled = index === 0;
+            document.getElementById('btn-prev').classList.toggle('opacity-50', index === 0);
+            document.getElementById('btn-next').innerText = index === questions.length - 1 ? 'Selesai' : 'Selanjutnya';
+
+            updateProgress();
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function renderPGOptions(q) {
+            const currentAns = userAnswers[q.id] || '';
+            const labels = ['A', 'B', 'C', 'D', 'E'];
+            let html = `<div class="space-y-2.5">`;
+            q.options.forEach((opt, idx) => {
+                const label = labels[idx];
+                const isSelected = currentAns === opt;
+                html += `
+                    <label onclick="savePGAnswer(${q.id}, '${opt.replace(/'/g, "\\'")}')"
+                        class="option-card flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-200 cursor-pointer transition ${isSelected ? 'selected' : ''}">
+                        <span class="w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center border ${isSelected ? 'bg-sky-600 text-white border-sky-600' : 'bg-slate-100 text-slate-600 border-slate-300'}">${label}</span>
+                        <span class="text-sm text-slate-700 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function savePGAnswer(qId, val) {
+            userAnswers[qId] = val;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function renderPGMultiOptions(q) {
+            const currentAns = userAnswers[q.id] || [];
+            let html = `<div class="space-y-2.5">`;
+            q.options.forEach((opt, idx) => {
+                const isChecked = currentAns.includes(opt);
+                html += `
+                    <label onclick="togglePGMultiAnswer(${q.id}, '${opt.replace(/'/g, "\\'")}')"
+                        class="option-card flex items-start gap-3.5 p-3.5 rounded-xl border border-slate-200 cursor-pointer transition ${isChecked ? 'selected' : ''}">
+                        <div class="mt-0.5 w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 ${isChecked ? 'bg-sky-600 border-sky-600 text-white' : 'border-slate-400 bg-white'}">
+                            ${isChecked ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+                        </div>
+                        <span class="text-sm text-slate-700 font-medium leading-normal">${opt}</span>
+                    </label>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function togglePGMultiAnswer(qId, val) {
+            let list = userAnswers[qId] || [];
+            if (list.includes(val)) {
+                list = list.filter(item => item !== val);
+            } else {
+                list.push(val);
+            }
+            userAnswers[qId] = list;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function renderPGTableOptions(q) {
+            const currentAns = userAnswers[q.id] || {};
+            let html = `
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                <th class="p-3">Pernyataan</th>
+                                <th class="p-3 text-center w-28">Pilihan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+            `;
+            q.statements.forEach((stmt, idx) => {
+                const selectedVal = currentAns[idx] || '';
+                const opts = (stmt.correct === 'BENAR' || stmt.correct === 'SALAH') ? ['BENAR', 'SALAH'] : ['YA', 'TIDAK'];
+                html += `
+                    <tr>
+                        <td class="p-3 text-slate-700">${stmt.text}</td>
+                        <td class="p-3 text-center">
+                            <select onchange="saveTableAnswer(${q.id}, ${idx}, this.value)" class="bg-white border border-slate-300 rounded-lg text-xs font-bold p-2 text-slate-700 focus:ring-2 focus:ring-sky-500 outline-none">
+                                <option value="">-- Pilih --</option>
+                                <option value="${opts[0]}" ${selectedVal === opts[0] ? 'selected' : ''}>${opts[0]}</option>
+                                <option value="${opts[1]}" ${selectedVal === opts[1] ? 'selected' : ''}>${opts[1]}</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+            html += `</tbody></table></div>`;
+            return html;
+        }
+
+        function saveTableAnswer(qId, stmtIdx, val) {
+            if (!userAnswers[qId]) userAnswers[qId] = {};
+            userAnswers[qId][stmtIdx] = val;
+            updateProgress();
+        }
+
+        function renderMatchingOptions(q) {
+            const currentAns = userAnswers[q.id] || {};
+            const allTargets = q.pairs.map(p => p.target);
+
+            let html = `<div class="space-y-3">`;
+            q.pairs.forEach((pair, idx) => {
+                const selected = currentAns[idx] || '';
+                html += `
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                        <div class="text-sm font-semibold text-slate-700">${pair.premise}</div>
+                        <div>
+                            <select onchange="saveMatchingAnswer(${q.id}, ${idx}, this.value)" class="w-full bg-white border border-slate-300 rounded-lg text-xs font-semibold p-2.5 text-slate-800 focus:ring-2 focus:ring-sky-500 outline-none">
+                                <option value="">-- Pasangkan Jawaban --</option>
+                                ${allTargets.map(t => `<option value="${t}" ${selected === t ? 'selected' : ''}>${t}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function saveMatchingAnswer(qId, premiseIdx, val) {
+            if (!userAnswers[qId]) userAnswers[qId] = {};
+            userAnswers[qId][premiseIdx] = val;
+            updateProgress();
+        }
+
+        function renderShortAnswerInput(q) {
+            const currentVal = userAnswers[q.id] || '';
+            return `
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-500 uppercase">Ketikkan Jawaban Anda:</label>
+                    <input type="text" value="${currentVal}" oninput="saveShortAnswer(${q.id}, this.value)"
+                        placeholder="Contoh: 45"
+                        class="w-full max-w-xs px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-800 text-lg font-bold outline-none transition">
+                    <p class="text-xs text-slate-400">*Isikan jawaban berupa bilangan bulat tanpa satuan/spasi.</p>
+                </div>
+            `;
+        }
+
+        function saveShortAnswer(qId, val) {
+            userAnswers[qId] = val.trim();
+            updateProgress();
+        }
+
+        function navigateQuestion(direction) {
+            const newIndex = currentQuestionIndex + direction;
+            if (newIndex >= 0 && newIndex < questions.length) {
+                loadQuestion(newIndex);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // MODAL & SUBMISSION EVALUATOR
+        // -------------------------------------------------------------
+        function confirmSubmit() {
+            let answeredCount = 0;
+            questions.forEach(q => { if (checkIsAnswered(q.id)) answeredCount++; });
+
+            const modalText = document.getElementById('modal-warning-text');
+            if (answeredCount < questions.length) {
+                modalText.innerHTML = `Anda baru menjawab <span class="text-amber-600 font-bold">${answeredCount} dari ${questions.length}</span> soal. Apakah Anda yakin ingin menyelesaikan?`;
+            } else {
+                modalText.innerText = "Seluruh 25 soal telah dijawab. Kirimkan lembar jawaban Anda sekarang?";
+            }
+            document.getElementById('submit-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('submit-modal').classList.add('hidden');
+        }
+
+        function processSubmit() {
+            closeModal();
+            clearInterval(timerInterval);
+            isSubmitted = true;
+
+            let correctCount = 0;
+            let totalQuestions = questions.length;
+
+            questions.forEach(q => {
+                const userAns = userAnswers[q.id];
+                if (q.type === 'pg' && userAns === q.answer) {
+                    correctCount++;
+                } else if (q.type === 'pg_kompleks_multi') {
+                    if (Array.isArray(userAns) && userAns.length === q.answer.length && userAns.every(v => q.answer.includes(v))) {
+                        correctCount++;
+                    }
+                } else if (q.type === 'pg_kompleks_table') {
+                    if (userAns) {
+                        let allMatched = q.statements.every((s, idx) => userAns[idx] === s.correct);
+                        if (allMatched) correctCount++;
+                    }
+                } else if (q.type === 'matching') {
+                    if (userAns) {
+                        let allMatched = q.pairs.every((p, idx) => userAns[idx] === p.target);
+                        if (allMatched) correctCount++;
+                    }
+                } else if (q.type === 'short_answer') {
+                    if (userAns && userAns.toLowerCase() === q.answer.toLowerCase()) {
+                        correctCount++;
+                    }
+                }
+            });
+
+            const finalScore = Math.round((correctCount / totalQuestions) * 100);
+            const wrongCount = totalQuestions - correctCount;
+            const accuracy = Math.round((correctCount / totalQuestions) * 100);
+
+            document.getElementById('exam-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            document.getElementById('result-user-info').innerText = `Peserta: ${currentUser.name} | Kelas: ${currentUser.class} (Absen: ${currentUser.absen})`;
+            document.getElementById('final-score').innerText = finalScore;
+            document.getElementById('stat-correct').innerText = `${correctCount} Soal`;
+            document.getElementById('stat-wrong').innerText = `${wrongCount} Soal`;
+            document.getElementById('stat-accuracy').innerText = `${accuracy}%`;
+
+            let timeSpentMins = 74 - Math.floor(timeRemaining / 60);
+            let timeSpentSecs = 60 - (timeRemaining % 60);
+            document.getElementById('stat-time').innerText = `${timeSpentMins}m ${timeSpentSecs}s`;
+
+            renderDiscussionList();
+        }
+
+        function renderDiscussionList() {
+            const list = document.getElementById('discussion-list');
+            list.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const userAns = userAnswers[q.id];
+                let isCorrect = false;
+
+                if (q.type === 'pg') isCorrect = userAns === q.answer;
+                else if (q.type === 'pg_kompleks_multi') isCorrect = Array.isArray(userAns) && userAns.length === q.answer.length && userAns.every(v => q.answer.includes(v));
+                else if (q.type === 'pg_kompleks_table') isCorrect = userAns && q.statements.every((s, i) => userAns[i] === s.correct);
+                else if (q.type === 'matching') isCorrect = userAns && q.pairs.every((p, i) => userAns[i] === p.target);
+                else if (q.type === 'short_answer') isCorrect = userAns && userAns.toLowerCase() === q.answer.toLowerCase();
+
+                const card = document.createElement('div');
+                card.className = `bg-white p-5 rounded-2xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/20' : 'border-red-200 bg-red-50/20'} shadow-sm space-y-3`;
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <span class="text-xs font-bold ${isCorrect ? 'text-emerald-700' : 'text-red-700'}">
+                            <i class="fa-solid ${isCorrect ? 'fa-circle-check' : 'fa-circle-xmark'} mr-1"></i>
+                            Soal No. ${idx + 1} (${isCorrect ? 'BENAR' : 'SALAH'})
+                        </span>
+                        <span class="text-xs text-slate-500">${q.category}</span>
+                    </div>
+                    <div class="text-sm font-medium text-slate-800">${q.question}</div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-200 text-xs space-y-1">
+                        <div class="text-slate-600"><strong>Jawaban Anda:</strong> ${formatUserAnswerDisplay(q, userAns)}</div>
+                        <div class="text-emerald-700"><strong>Kunci Jawaban:</strong> ${formatCorrectAnswerDisplay(q)}</div>
+                    </div>
+                    <div class="bg-sky-50 p-3.5 rounded-xl border border-sky-100 text-xs text-slate-700 space-y-1">
+                        <strong class="text-sky-800 block"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>Pembahasan Pembelajaran:</strong>
+                        <div>${q.explanation}</div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function formatUserAnswerDisplay(q, userAns) {
+            if (!userAns) return '<span class="text-red-500 italic">Tidak dijawab</span>';
+            if (q.type === 'pg_kompleks_multi') return Array.isArray(userAns) ? userAns.join('; ') : userAns;
+            if (q.type === 'pg_kompleks_table') {
+                return Object.keys(userAns).map(k => {
+                    const stmt = q.statements[k];
+                    const shortText = stmt.text.length > 40 ? stmt.text.substring(0, 40) + '...' : stmt.text;
+                    return `${shortText} → ${userAns[k]}`;
+                }).join('<br>');
+            }
+            if (q.type === 'matching') {
+                return Object.keys(userAns).map(k => {
+                    const p = q.pairs[k];
+                    return `${p.premise} → ${userAns[k]}`;
+                }).join('<br>');
+            }
+            return userAns;
+        }
+
+        function formatCorrectAnswerDisplay(q) {
+            if (q.type === 'pg') return q.answer;
+            if (q.type === 'pg_kompleks_multi') return q.answer.join('; ');
+            if (q.type === 'pg_kompleks_table') return q.statements.map(s => s.correct).join(', ');
+            if (q.type === 'matching') return q.pairs.map(p => `${p.premise} → ${p.target}`).join(' | ');
+            if (q.type === 'short_answer') return q.answer;
+            return '';
+        }
+
+        document.querySelectorAll('.copy-year').forEach(el => {
+            el.textContent = new Date().getFullYear();
+        });
+    </script>
+<!-- ==================== FORCE FULLSCREEN ==================== -->
+<div id="fs-banner" style="display:none; position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:#2c3e50; color:#fff; padding:10px 18px; border-radius:8px; font-size:14px; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,.25); cursor:pointer;">
+  Klik di mana saja untuk masuk mode layar penuh
 </div>
 
 <script>
-/* ================================================================
-   1. KONFIGURASI UJIAN
-   ================================================================ */
-const TOTAL_SECONDS = 75 * 60;
-
-const SUBJECT = {
-  nama: 'Transformasi, Lingkaran & Pencacahan (Matematika)',
-  jenjang: 'SMA/MA/SMK',
-  kode: 'TKA-MAT-SAS-01'
-};
-
-/* ================================================================
-   2. DATA SOAL 25 ITEM
-   ================================================================ */
-const questions = [
-
-  /* 1. PG - Translasi Titik */
-  {
-    type: 'pg',
-    topic: 'Transformasi — Translasi Titik',
-    question: String.raw`Titik \(A(3,5)\) ditranslasikan oleh translasi \(T(-2,1)\). Bayangan titik \(A\) adalah ....`,
-    options: ['(1,6)', '(5,4)', '(1,4)', '(5,6)', '(-1,6)'],
-    answer: 0,
-    pembahasan: String.raw`Translasi titik \((x, y)\) oleh \(T(a, b)\) adalah \((x+a, y+b)\). Maka \(A'(3+(-2), 5+1) = (1, 6)\).`
-  },
-
-  /* 2. PG - Refleksi Titik */
-  {
-    type: 'pg',
-    topic: 'Transformasi — Refleksi Sumbu X',
-    question: String.raw`Titik \(B(5,-3)\) dicerminkan terhadap sumbu \(X\). Bayangan titik \(B\) adalah ....`,
-    options: ['(-5,-3)', '(5,3)', '(-5,3)', '(5,-3)', '(3,5)'],
-    answer: 1,
-    pembahasan: String.raw`Pencerminan terhadap sumbu \(X\) memetakan \((x, y) \to (x, -y)\). Maka \(B'(5, -(-3)) = (5, 3)\).`
-  },
-
-  /* 3. PG - Rotasi Titik */
-  {
-    type: 'pg',
-    topic: 'Transformasi — Rotasi',
-    question: String.raw`Titik \(C(-4,6)\) dirotasikan \(90^{\circ}\) berlawanan arah jarum jam terhadap pusat \(O(0,0)\). Bayangan titik \(C\) adalah ....`,
-    options: ['(6,4)', '(4,-6)', '(-6,-4)', '(-4,-6)', '(6,-4)'],
-    answer: 2,
-    pembahasan: String.raw`Rotasi \(90^{\circ}\) berlawanan arah jarum jam di pusat \((0,0)\) memetakan \((x, y) \to (-y, x)\). Maka \(C'(-6, -4)\).`
-  },
-
-  /* 4. PG - Dilatasi Titik */
-  {
-    type: 'pg',
-    topic: 'Transformasi — Dilatasi',
-    question: String.raw`Titik \(D(8,4)\) didilatasikan dengan pusat \(O(0,0)\) dan faktor skala \(\dfrac{1}{4}\). Bayangan titik \(D\) adalah ....`,
-    options: ['(32,16)', '(4,2)', '(8,1)', '(2,1)', '(1,2)'],
-    answer: 3,
-    pembahasan: String.raw`Dilatasi \([O, k]\) memetakan \((x, y) \to (kx, ky)\). Maka \(D'\left(8 \cdot \frac{1}{4}, 4 \cdot \frac{1}{4}\right) = (2, 1)\).`
-  },
-
-  /* 5. PG - Translasi Fungsi */
-  {
-    type: 'pg',
-    topic: 'Transformasi — Translasi Fungsi',
-    question: String.raw`Fungsi \(f(x) = 3x + 2\) ditranslasikan oleh \(T(2,-4)\). Hasil translasi fungsi tersebut adalah ....`,
-    options: ['\(3x+8\)', '\(3x-4\)', '\(3x+4\)', '\(3x-6\)', '\(3x-8\)'],
-    answer: 4,
-    pembahasan: String.raw`Translasi \(T(a,b)\) pada fungsi \(y = f(x)\) menjadi \(y - b = f(x - a)\). \[\Rightarrow y - (-4) = 3(x - 2) + 2\] \[\Rightarrow y + 4 = 3x - 6 + 2 \Rightarrow y = 3x - 8\]`
-  },
-
-  /* 6. PG - Komposisi Transformasi Titik */
-  {
-    type: 'pg',
-    topic: 'Transformasi — Komposisi',
-    question: String.raw`Titik \(E(2,1)\) ditranslasikan oleh \(T_1(1,-2)\) kemudian dicerminkan terhadap garis \(y=x\). Bayangan akhir \(E\) adalah ....`,
-    options: ['(-1,3)', '(3,-1)', '(1,-3)', '(-3,1)', '(1,3)'],
-    answer: 0,
-    pembahasan: String.raw`1) Translasi: \(E'(2+1, 1+(-2)) = (3, -1)\). 2) Refleksi \(y=x\): tukar koordinat \((-1, 3)\).`
-  },
-
-  /* 7. PG - Panjang Busur Lingkaran */
-  {
-    type: 'pg',
-    topic: 'Lingkaran — Panjang Busur',
-    question: String.raw`Panjang busur lingkaran dengan jari-jari \(21\text{ cm}\) dan sudut pusat \(60^{\circ}\) adalah .... \(\left(\pi = \dfrac{22}{7}\right)\)`,
-    options: ['11', '22', '44', '66', '33'],
-    answer: 1,
-    pembahasan: String.raw`\(\text{Panjang Busur} = \dfrac{\alpha}{360^{\circ}} \cdot 2\pi r = \dfrac{60^{\circ}}{360^{\circ}} \cdot 2 \cdot \dfrac{22}{7} \cdot 21 = \dfrac{1}{6} \cdot 132 = 22\text{ cm}\).`
-  },
-
-  /* 8. PG - Luas Juring Lingkaran */
-  {
-    type: 'pg',
-    topic: 'Lingkaran — Luas Juring',
-    question: String.raw`Luas juring lingkaran dengan jari-jari \(14\text{ cm}\) dan sudut pusat \(90^{\circ}\) adalah .... \(\left(\pi = \dfrac{22}{7}\right)\)`,
-    options: ['77', '154', '308', '616', '38,5'],
-    answer: 1,
-    pembahasan: String.raw`\(\text{Luas Juring} = \dfrac{90^{\circ}}{360^{\circ}} \cdot \pi r^2 = \dfrac{1}{4} \cdot \dfrac{22}{7} \cdot 14^2 = \dfrac{1}{4} \cdot 616 = 154\text{ cm}^2\).`
-  },
-
-  /* 9. PG - Keliling Lingkaran */
-  {
-    type: 'pg',
-    topic: 'Lingkaran — Keliling',
-    question: String.raw`Keliling lingkaran dengan diameter \(28\text{ cm}\) adalah .... \(\left(\pi = \dfrac{22}{7}\right)\)`,
-    options: ['22', '44', '66', '308', '88'],
-    answer: 4,
-    pembahasan: String.raw`\(\text{Keliling} = \pi \cdot d = \dfrac{22}{7} \cdot 28 = 88\text{ cm}\).`
-  },
-
-  /* 10. PG - Aturan Pencacahan */
-  {
-    type: 'pg',
-    topic: 'Kaidah Pencacahan — Aturan Pengisian',
-    question: String.raw`Dari kota A ke B ada \(4\) jalan, dan dari B ke C ada \(5\) jalan. Banyak cara perjalanan dari A ke C melalui B adalah ....`,
-    options: ['9', '4', '5', '20', '16'],
-    answer: 3,
-    pembahasan: String.raw`Menggunakan kaidah perkalian: \(4 \times 5 = 20\) cara.`
-  },
-
-  /* 11. PG - Permutasi Sederhana */
-  {
-    type: 'pg',
-    topic: 'Kaidah Pencacahan — Permutasi',
-    question: String.raw`Banyak cara menyusun \(4\) buku berbeda dalam sebuah rak buku adalah ....`,
-    options: ['24', '4', '12', '16', '8'],
-    answer: 0,
-    pembahasan: String.raw`Susunan \(4\) objek berbeda adalah \(4! = 4 \times 3 \times 2 \times 1 = 24\).`
-  },
-
-  /* 12. PG - Permutasi Unsur Sama */
-  {
-    type: 'pg',
-    topic: 'Kaidah Pencacahan — Unsur Sama',
-    question: String.raw`Banyak cara menyusun huruf dari kata "MAMA" adalah ....`,
-    options: ['24', '12', '6', '4', '8'],
-    answer: 2,
-    pembahasan: String.raw`Total huruf \(4\), huruf M ada \(2\), huruf A ada \(2\). \[\text{Susunan} = \dfrac{4!}{2! 2!} = \dfrac{24}{2 \times 2} = 6\]`
-  },
-
-  /* 13. Table BS - Sifat Transformasi Geometri */
-  {
-    type: 'table',
-    topic: 'Transformasi — Sifat Dasar',
-    question: String.raw`Tentukan kebenaran dari setiap pernyataan mengenai sifat-sifat transformasi geometri berikut.`,
-    columns: ['Benar', 'Salah'],
-    statements: [
-      { text: String.raw`Translasi sejauh \(T(a,b)\) tidak mengubah bentuk maupun ukuran bangun (isometri).`, answer: 0 },
-      { text: String.raw`Pencerminan terhadap titik asal \(O(0,0)\) memetakan titik \((x,y)\) menjadi \((x,-y)\).`, answer: 1 },
-      { text: String.raw`Rotasi sebesar \(180^{\circ}\) terhadap \(O(0,0)\) memetakan titik \((x,y)\) menjadi \((-x,-y)\).`, answer: 0 },
-      { text: String.raw`Dilatasi dengan faktor skala \(k > 1\) akan memperkecil ukuran bangun geometri.`, answer: 1 }
-    ],
-    pembahasan: String.raw`1. Benar (isometri). 2. Salah (seharusnya \((-x,-y)\)). 3. Benar (\(180^{\circ}\) membalik tanda keduanya). 4. Salah (\(k>1\) memperbesar).`
-  },
-
-  /* 14. Table BS - Hubungan Sudut Pusat & Keliling Lingkaran */
-  {
-    type: 'table',
-    topic: 'Lingkaran — Sudut Pusat & Keliling',
-    question: String.raw`Tentukan kebenaran pernyataan terkait sudut pada lingkaran berikut.`,
-    columns: ['Benar', 'Salah'],
-    statements: [
-      { text: String.raw`Besar sudut keliling adalah setengah dari besar sudut pusat yang menghadap busur yang sama.`, answer: 0 },
-      { text: String.raw`Semua sudut keliling yang menghadap pada diameter lingkaran besarnya adalah \(90^{\circ}\).`, answer: 0 },
-      { text: String.raw`Jika sudut pusat \(100^{\circ}\), maka besar sudut keliling yang menghadap busur sama adalah \(200^{\circ}\).`, answer: 1 },
-      { text: String.raw`Panjang busur berbanding lurus dengan besar sudut pusat lingkaran.`, answer: 0 }
-    ],
-    pembahasan: String.raw`1. Benar. 2. Benar (sudut siku-siku). 3. Salah (seharusnya \(50^{\circ}\)). 4. Benar.`
-  },
-
-  /* 15. Table BS - Kaidah Pencacahan */
-  {
-    type: 'table',
-    topic: 'Kaidah Pencacahan — Konsep Dasar',
-    question: String.raw`Tentukan kebenaran pernyataan mengenai faktorial, permutasi, dan kombinasi berikut.`,
-    columns: ['Benar', 'Salah'],
-    statements: [
-      { text: String.raw`Nilai dari \(0!\) adalah sama dengan \(1\).`, answer: 0 },
-      { text: String.raw`Permutasi memperhatikan urutan penyusunan objek, sedangkan kombinasi tidak.`, answer: 0 },
-      { text: String.raw`Banyak kombinasi \(3\) objek dari \(6\) objek dirumuskan dengan \(^6P_3\).`, answer: 1 },
-      { text: String.raw`Banyak cara memilih \(1\) ketua dan \(1\) sekretaris dari \(6\) orang adalah \(30\) cara.`, answer: 0 }
-    ],
-    pembahasan: String.raw`1. Benar. 2. Benar. 3. Salah (seharusnya \(^6C_3\)). 4. Benar (\(P(6,2) = 6 \times 5 = 30\)).`
-  },
-
-  /* 16. Table YT - Analisis Nilai Lingkaran & Juring */
-  {
-    type: 'table',
-    topic: 'Lingkaran — Analisis Lanjutan',
-    question: String.raw`Diketahui sebuah lingkaran berpusat di \(O\) dengan jari-jari \(r = 21\text{ cm}\) \(\left(\pi = \dfrac{22}{7}\right)\). Apakah pernyataan berikut bernilai Ya atau Tidak?`,
-    columns: ['Ya', 'Tidak'],
-    statements: [
-      { text: String.raw`Keliling lingkaran tersebut adalah \(132\text{ cm}\).`, answer: 0 },
-      { text: String.raw`Luas lingkaran tersebut adalah \(1386\text{ cm}^2\).`, answer: 0 },
-      { text: String.raw`Panjang busur untuk sudut pusat \(120^{\circ}\) adalah \(44\text{ cm}\).`, answer: 0 },
-      { text: String.raw`Luas juring untuk sudut pusat \(90^{\circ}\) adalah \(231\text{ cm}^2\).`, answer: 1 }
-    ],
-    pembahasan: String.raw`1. Keliling = \(2 \cdot \frac{22}{7} \cdot 21 = 132\) (Ya). 2. Luas = \(\frac{22}{7} \cdot 21^2 = 1386\) (Ya). 3. Busur = \(\frac{120}{360} \cdot 132 = 44\) (Ya). 4. Juring \(90^{\circ}\) = \(\frac{1}{4} \cdot 1386 = 346{,}5\) cm² (Tidak, karena tertulis 231).`
-  },
-
-  /* 17. Table YT - Sifat Fungsi & Translasi */
-  {
-    type: 'table',
-    topic: 'Transformasi — Fungsi',
-    question: String.raw`Diketahui fungsi \(f(x) = 2x + 5\). Apakah pernyataan transformasi fungsi berikut benar?`,
-    columns: ['Ya', 'Tidak'],
-    statements: [
-      { text: String.raw`Jika dicerminkan terhadap sumbu \(X\), hasilnya adalah \(y = -2x - 5\).`, answer: 0 },
-      { text: String.raw`Jika dicerminkan terhadap sumbu \(Y\), hasilnya adalah \(y = -2x + 5\).`, answer: 0 },
-      { text: String.raw`Jika ditranslasikan oleh \(T(1,2)\), hasilnya adalah \(y = 2x + 4\).`, answer: 1 },
-      { text: String.raw`Jika didilatasikan sejajar sumbu \(Y\) dengan faktor skala \(2\), hasilnya \(y = 4x + 10\).`, answer: 0 }
-    ],
-    pembahasan: String.raw`1. Refleksi sumbu \(X\): \(y \to -y \implies -y = 2x+5 \implies y = -2x-5\) (Ya). 2. Refleksi sumbu \(Y\): \(x \to -x \implies y = 2(-x)+5 = -2x+5\) (Ya). 3. Translasi \((1,2)\): \(y - 2 = 2(x-1)+5 \implies y = 2x+5\), bukan \(2x+4\) (Tidak). 4. Dilatasi vertikal skala \(2\): \(y \to 2y \implies y = 2(2x+5) = 4x+10\) (Ya).`
-  },
-
-  /* 18. Table YT - Kombinatorika Lanjutan */
-  {
-    type: 'table',
-    topic: 'Kaidah Pencacahan — Lanjutan',
-    question: String.raw`Apakah hasil perhitungan nilai kombinasi dan permutasi berikut bernilai benar?`,
-    columns: ['Ya', 'Tidak'],
-    statements: [
-      { text: String.raw`Nilai dari permutasi \(^6P_2\) adalah \(30\).`, answer: 0 },
-      { text: String.raw`Nilai dari kombinasi \(^6C_3\) adalah \(20\).`, answer: 0 },
-      { text: String.raw`Banyak cara memilih \(3\) siswa dari \(7\) siswa adalah \(35\).`, answer: 0 },
-      { text: String.raw`Banyak susunan huruf dari kata "SOSO" adalah \(12\).`, answer: 1 }
-    ],
-    pembahasan: String.raw`1. \(^6P_2 = 6 \times 5 = 30\) (Ya). 2. \(^6C_3 = \frac{6 \times 5 \times 4}{3 \times 2 \times 1} = 20\) (Ya). 3. \(^7C_3 = \frac{7 \times 6 \times 5}{3 \times 2 \times 1} = 35\) (Ya). 4. "SOSO" = \(\frac{4!}{2! 2!} = 6\) (Tidak, tertulis 12).`
-  },
-
-  /* 19. Match - Transformasi Koordinat */
-  {
-    type: 'match',
-    topic: 'Transformasi — Koordinat',
-    question: String.raw`Pasangkan titik awal berikut dengan hasil bayangan transformasinya yang tepat.`,
-    premises: [
-      String.raw`Titik \((3,5)\) ditranslasikan oleh \(T(-2,1)\)`,
-      String.raw`Titik \(B(5,-3)\) dicerminkan terhadap sumbu \(X\)`,
-      String.raw`Titik \((-4,6)\) dirotasikan \(90^{\circ}\) berlawanan arah jarum jam di \(O(0,0)\)`,
-      String.raw`Titik \((8,4)\) didilatasikan dengan pusat \(O(0,0)\) dan skala \(\dfrac{1}{4}\)`
-    ],
-    options: ['A. (1,6)', 'B. (5,3)', 'C. (-6,-4)', 'D. (2,1)', 'E. (-1,6)'],
-    answer: [0, 1, 2, 3],
-    pembahasan: String.raw`1. \((3-2, 5+1) = (1,6)\) [A]. 2. \((5, -(-3)) = (5,3)\) [B]. 3. \((-6, -4)\) [C]. 4. \((8/4, 4/4) = (2,1)\) [D].`
-  },
-
-  /* 20. Match - Lingkaran (Busur & Juring) */
-  {
-    type: 'match',
-    topic: 'Lingkaran — Ukuran Utama',
-    question: String.raw`Pasangkan informasi ukuran lingkaran dengan nilai hasil perhitungannya \(\left(\pi = \dfrac{22}{7}\right)\).`,
-    premises: [
-      String.raw`Panjang busur (\(r=21\text{ cm}\), sudut \(60^{\circ}\))`,
-      String.raw`Luas juring (\(r=14\text{ cm}\), sudut \(90^{\circ}\))`,
-      String.raw`Keliling lingkaran (\(d=28\text{ cm}\))`,
-      String.raw`Luas lingkaran (\(r=14\text{ cm}\))`
-    ],
-    options: ['A. 22 cm', 'B. 154 cm²', 'C. 88 cm', 'D. 616 cm²', 'E. 308 cm²'],
-    answer: [0, 1, 2, 3],
-    pembahasan: String.raw`1. Busur = \(22\) cm [A]. 2. Juring = \(154\) cm² [B]. 3. Keliling = \(88\) cm [C]. 4. Luas = \(616\) cm² [D].`
-  },
-
-  /* 21. Match - Kaidah Pencacahan */
-  {
-    type: 'match',
-    topic: 'Kaidah Pencacahan — Nilai',
-    question: String.raw`Pasangkan bentuk permutasi atau kombinasi berikut dengan nilai perhitungannya yang benar.`,
-    premises: [
-      String.raw`Permutasi \(^6P_2\)`,
-      String.raw`Kombinasi \(^6C_3\)`,
-      String.raw`Banyak cara menyusun \(4\) buku berbeda (\(4!\))`,
-      String.raw`Banyak susunan huruf "MAMA"`
-    ],
-    options: ['A. 30', 'B. 20', 'C. 24', 'D. 6', 'E. 15'],
-    answer: [0, 1, 2, 3],
-    pembahasan: String.raw`1. \(^6P_2 = 30\) [A]. 2. \(^6C_3 = 20\) [B]. 3. \(4! = 24\) [C]. 4. \(\frac{4!}{2!2!} = 6\) [D].`
-  },
-
-  /* 22. Match - Sudut Lingkaran */
-  {
-    type: 'match',
-    topic: 'Lingkaran — Sudut Pusat & Keliling',
-    question: String.raw`Pasangkan besar sudut pusat atau hubungan sudut berikut dengan nilai yang sesuai.`,
-    premises: [
-      String.raw`Sudut keliling jika sudut pusat \(120^{\circ}\)`,
-      String.raw`Sudut pusat jika sudut keliling \(45^{\circ}\)`,
-      String.raw`Besar sudut keliling yang menghadap diameter`,
-      String.raw`Besar sudut pusat satu putaran penuh`
-    ],
-    options: ['A. 60°', 'B. 90°', 'C. 360°', 'D. 30°', 'E. 45°'],
-    answer: [0, 1, 1, 2],
-    pembahasan: String.raw`1. Setengah dari \(120^{\circ}\) = \(60^{\circ}\) [A]. 2. Dua kali \(45^{\circ}\) = \(90^{\circ}\) [B]. 3. Menghadap diameter = \(90^{\circ}\) [B]. 4. Satu putaran penuh = \(360^{\circ}\) [C].`
-  },
-
-  /* 23. Match - Fungsi dan Refleksi */
-  {
-    type: 'match',
-    topic: 'Transformasi — Fungsi & Pencerminan',
-    question: String.raw`Pasangkan fungsi asal \(f(x) = 3x - 2\) dengan hasil transformasinya.`,
-    premises: [
-      String.raw`Dicerminkan terhadap sumbu \(Y\)`,
-      String.raw`Dicerminkan terhadap sumbu \(X\)`,
-      String.raw`Ditranslasikan oleh \(T(0,3)\)`,
-      String.raw`Didilatasikan vertikal dengan skala \(2\)`
-    ],
-    options: [
-      'A. y = -3x - 2',
-      'B. y = -3x + 2',
-      'C. y = 3x + 1',
-      'D. y = 6x - 4',
-      'E. y = 3x - 5'
-    ],
-    answer: [0, 1, 2, 3],
-    pembahasan: String.raw`1. Sumbu \(Y\): \(f(-x) = 3(-x)-2 = -3x-2\) [A]. 2. Sumbu \(X\): \(-y = 3x-2 \implies y = -3x+2\) [B]. 3. Translasi \(T(0,3)\): \(y-3 = 3x-2 \implies y = 3x+1\) [C]. 4. Skala \(2\): \(y = 2(3x-2) = 6x-4\) [D].`
-  },
-
-  /* 24. Isian - Kombinasi */
-  {
-    type: 'isian',
-    topic: 'Kaidah Pencacahan — Kombinasi',
-    question: String.raw`Banyak cara memilih \(3\) siswa dari \(7\) siswa untuk mengikuti kompetisi adalah ....`,
-    answer: 35,
-    unit: 'cara',
-    hint: 'Ketik jawaban berupa bilangan bulat.',
-    pembahasan: String.raw`Menggunakan rumus kombinasi \(^7C_3 = \dfrac{7!}{3! 4!} = \dfrac{7 \times 6 \times 5}{3 \times 2 \times 1} = 35\).`
-  },
-
-  /* 25. Isian - Permutasi Jabatan */
-  {
-    type: 'isian',
-    topic: 'Kaidah Pencacahan — Susunan Jabatan',
-    question: String.raw`Dalam sebuah kelas terdapat \(12\) siswa. Akan dipilih \(3\) siswa untuk menempati posisi ketua, sekretaris, dan bendahara. Banyak cara pemilihan yang mungkin adalah ....`,
-    answer: 1320,
-    unit: 'cara',
-    hint: 'Ketik jawaban berupa bilangan bulat.',
-    pembahasan: String.raw`Karena posisi berbeda (memperhatikan urutan), gunakan permutasi \(^12P_3 = 12 \times 11 \times 10 = 1320\).`
+(function () {
+  function requestFS() {
+    var el = document.documentElement;
+    var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if (fn) {
+      try {
+        var p = fn.call(el);
+        if (p && p.catch) p.catch(function(){ showBanner(); });
+        return true;
+      } catch (e) { showBanner(); return false; }
+    } else {
+      showBanner();
+      return false;
+    }
   }
 
-];
-
-/* ================================================================
-   3. STATE APLIKASI
-   ================================================================ */
-const state = {
-  name: '',
-  current: 0,
-  answers: [],
-  flagged: new Set(),
-  finished: false,
-  started: false,
-  timeLeft: TOTAL_SECONDS,
-  startedAt: null,
-  finishedAt: null
-};
-
-let timerId = null;
-let fallbackMode = false;
-
-/* ================================================================
-   4. UTILITAS
-   ================================================================ */
-const LETTERS = ['A', 'B', 'C', 'D', 'E'];
-
-function escapeHtml(str) {
-  return String(str == null ? '' : str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function typeLabel(t) {
-  return {
-    pg: 'Pilihan Ganda',
-    table: 'Pilihan Ganda Kompleks',
-    match: 'Menjodohkan',
-    isian: 'Isian Singkat'
-  }[t] || 'Soal';
-}
-
-function formatTanggal(d) {
-  try {
-    return d.toLocaleDateString('id-ID', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    });
-  } catch (e) {
-    return d.toDateString();
-  }
-}
-
-function formatJam(d) {
-  try {
-    return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-  } catch (e) {
-    return '';
-  }
-}
-
-/* ================================================================
-   5. MATHJAX + FALLBACK RENDERER
-   ================================================================ */
-function typeset(el) {
-  if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
-    window.MathJax.typesetPromise([el]).catch(() => {});
-  } else if (fallbackMode) {
-    renderFallback(el);
-  }
-}
-
-function texToHtml(tex) {
-  let s = tex;
-  s = s.replace(/\^\{([^{}]*)\}/g, '<sup>$1</sup>');
-  s = s.replace(/\^(\w)/g, '<sup>$1</sup>');
-  s = s.replace(/_\{([^{}]*)\}/g, '<sub>$1</sub>');
-  s = s.replace(/_(\w)/g, '<sub>$1</sub>');
-
-  let guard = 0;
-  while (/\\[dt]?frac\{/.test(s) && guard++ < 12) {
-    s = s.replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g,
-      '<span class="math-frac"><span class="math-num">$1</span><span class="math-den">$2</span></span>');
+  function isFS() {
+    return document.fullscreenElement || document.webkitFullscreenElement ||
+           document.mozFullScreenElement || document.msFullscreenElement;
   }
 
-  s = s.replace(/\\sqrt\[([^\]]*)\]\{([^{}]*)\}/g,
-    '<span class="math-root"><sup>$1</sup>√<span class="math-rad">$2</span></span>');
-  s = s.replace(/\\sqrt\{([^{}]*)\}/g,
-    '<span class="math-root">√<span class="math-rad">$1</span></span>');
+  function showBanner() {
+    var b = document.getElementById('fs-banner');
+    if (b) b.style.display = 'block';
+  }
 
-  const MAP = {
-    '\\times': '×', '\\cdot': '·', '\\div': '÷', '\\pm': '±',
-    '\\pi': 'π', '\\alpha': 'α', '\\beta': 'β', '\\theta': 'θ', '\\circ': '°',
-    '\\infty': '∞', '\\lim': 'lim', '\\sin': 'sin', '\\cos': 'cos', '\\tan': 'tan',
-    '\\to': '→', '\\rightarrow': '→'
+  function hideBanner() {
+    var b = document.getElementById('fs-banner');
+    if (b) b.style.display = 'none';
+  }
+
+  // 1) Coba langsung saat halaman siap
+  window.addEventListener('load', function () {
+    if (!isFS()) {
+      requestFS();
+      // Jika masih belum fullscreen setelah 500ms, tampilkan banner
+      setTimeout(function () {
+        if (!isFS()) showBanner();
+      }, 500);
+    }
+  });
+
+  // 2) Fallback: interaksi pertama pengguna
+  function firstInteraction() {
+    if (!isFS()) requestFS();
+    document.removeEventListener('click', firstInteraction);
+    document.removeEventListener('touchstart', firstInteraction);
+    document.removeEventListener('keydown', firstInteraction);
+  }
+  document.addEventListener('click', firstInteraction);
+  document.addEventListener('touchstart', firstInteraction, {passive:true});
+  document.addEventListener('keydown', firstInteraction);
+
+  // 3) Banner bisa diklik
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'fs-banner') {
+      requestFS();
+    }
+  });
+
+  // 4) Sembunyikan banner jika sudah fullscreen
+  document.addEventListener('fullscreenchange', function () {
+    if (isFS()) hideBanner();
+  });
+  document.addEventListener('webkitfullscreenchange', function () {
+    if (isFS()) hideBanner();
+  });
+
+  // 5) (Opsional) Tombol manual di score-bar
+  window.toggleFullscreen = function () {
+    if (isFS()) {
+      var exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+      if (exit) exit.call(document);
+    } else {
+      requestFS();
+    }
   };
-  Object.keys(MAP).forEach(k => { s = s.split(k).join(MAP[k]); });
-  return s.replace(/[{}]/g, '');
-}
-
-function renderFallback(root) {
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-  const targets = [];
-  let node;
-  while ((node = walker.nextNode())) {
-    if (/\\\(|\\\[/.test(node.nodeValue)) targets.push(node);
-  }
-  targets.forEach(n => {
-    let html = n.nodeValue
-      .replace(/\\\[([\s\S]*?)\\\]/g, (m, ex) => '<span class="math-display">' + texToHtml(ex) + '</span>')
-      .replace(/\\\(([\s\S]*?)\\\)/g, (m, ex) => texToHtml(ex));
-    const span = document.createElement('span');
-    span.innerHTML = html;
-    n.parentNode.replaceChild(span, n);
-  });
-}
-
-setTimeout(function () {
-  if (!(window.MathJax && typeof window.MathJax.typesetPromise === 'function')) {
-    fallbackMode = true;
-    if (state.started && !state.finished) renderQuestion();
-  }
-}, 4000);
-
-/* ================================================================
-   6. INISIALISASI STATE JAWABAN
-   ================================================================ */
-function initAnswers() {
-  state.answers = questions.map(q => {
-    if (q.type === 'pg') return null;
-    if (q.type === 'table') return q.statements.map(() => null);
-    if (q.type === 'match') return q.premises.map(() => null);
-    return '';
-  });
-}
-
-function isAnswered(i) {
-  const q = questions[i];
-  const a = state.answers[i];
-  if (q.type === 'pg') return a !== null && a !== undefined;
-  if (q.type === 'table') return Array.isArray(a) && a.every(v => v !== null);
-  if (q.type === 'match') return Array.isArray(a) && a.every(v => v !== null);
-  if (q.type === 'isian') return String(a || '').trim() !== '';
-  return false;
-}
-
-/* ================================================================
-   7. RENDER NAVIGASI
-   ================================================================ */
-function renderNav() {
-  const grid = document.getElementById('navGrid');
-  grid.innerHTML = questions.map((q, i) => {
-    let cls = 'nav-btn';
-    if (isAnswered(i)) cls += ' answered';
-    if (state.flagged.has(i)) cls += ' flagged';
-    if (i === state.current) cls += ' current';
-    return '<button class="' + cls + '" data-idx="' + i + '">' + (i + 1) + '</button>';
-  }).join('');
-
-  const answeredCount = questions.filter((_, i) => isAnswered(i)).length;
-  document.getElementById('progressText').textContent =
-    answeredCount + ' / ' + questions.length + ' terjawab';
-}
-
-/* ================================================================
-   8. RENDER SOAL
-   ================================================================ */
-function renderQuestion() {
-  const i = state.current;
-  const q = questions[i];
-  const card = document.getElementById('qCard');
-
-  let html = '';
-
-  html += '<div class="q-meta">';
-  html += '<span class="q-number">Soal ' + (i + 1) + '</span>';
-  html += '<span class="q-type">' + typeLabel(q.type) + '</span>';
-  html += '<span class="q-topic">' + q.topic + '</span>';
-  html += '</div>';
-
-  html += '<div class="stimulus">' + q.question + '</div>';
-
-  if (q.type === 'pg') {
-    html += '<div class="options">';
-    q.options.forEach((opt, oi) => {
-      const sel = state.answers[i] === oi ? ' selected' : '';
-      html += '<button class="option' + sel + '" data-opt="' + oi + '">' +
-        '<span class="opt-key">' + LETTERS[oi] + '</span>' +
-        '<span class="opt-text">' + opt + '</span>' +
-        '</button>';
-    });
-    html += '</div>';
-  }
-
-  else if (q.type === 'table') {
-    html += '<div class="table-wrap"><table class="bs-table"><thead><tr><th>Pernyataan</th>';
-    q.columns.forEach(c => { html += '<th>' + c + '</th>'; });
-    html += '</tr></thead><tbody>';
-
-    q.statements.forEach((st, ri) => {
-      html += '<tr><td class="stmt">' + st.text + '</td>';
-      q.columns.forEach((c, ci) => {
-        const sel = state.answers[i][ri] === ci ? ' selected' : '';
-        html += '<td class="cell"><button class="cell-btn' + sel +
-          '" data-row="' + ri + '" data-col="' + ci +
-          '" aria-label="' + c + '"></button></td>';
-      });
-      html += '</tr>';
-    });
-
-    html += '</tbody></table></div>';
-  }
-
-  else if (q.type === 'match') {
-    html += '<div class="match-list">';
-    q.premises.forEach((p, ri) => {
-      const val = state.answers[i][ri];
-      const hasVal = val !== null && val !== undefined ? ' has-value' : '';
-      html += '<div class="match-row">';
-      html += '<div class="match-premise"><span class="premise-num">' + (ri + 1) + '</span><span>' + p + '</span></div>';
-      html += '<select class="match-select' + hasVal + '" data-row="' + ri + '">';
-      html += '<option value="">— Pilih jawaban —</option>';
-      q.options.forEach((o, oi) => {
-        const sel = val === oi ? ' selected' : '';
-        html += '<option value="' + oi + '"' + sel + '>' + o + '</option>';
-      });
-      html += '</select></div>';
-    });
-    html += '</div>';
-  }
-
-  else if (q.type === 'isian') {
-    html += '<div class="isian-wrap">';
-    html += '<label class="isian-label" for="isianInput">Jawaban:</label>';
-    html += '<input type="text" inputmode="decimal" autocomplete="off" class="isian-input" id="isianInput" ' +
-      'value="' + escapeHtml(state.answers[i]) + '" placeholder="Ketik jawaban akhir (angka)">';
-    if (q.unit) html += '<span class="isian-unit">' + q.unit + '</span>';
-    if (q.hint) html += '<div class="isian-hint">' + q.hint + '</div>';
-    html += '</div>';
-  }
-
-  card.innerHTML = html;
-
-  document.getElementById('btnPrev').disabled = (i === 0);
-  document.getElementById('btnNext').textContent =
-    (i === questions.length - 1) ? 'Selesai & Lihat Hasil →' : 'Berikutnya →';
-  document.getElementById('btnFlag').classList.toggle('active', state.flagged.has(i));
-
-  renderNav();
-  typeset(card);
-}
-
-/* ================================================================
-   9. HANDLER INTERAKSI JAWABAN
-   ================================================================ */
-function selectOption(oi) {
-  if (state.finished) return;
-  state.answers[state.current] = oi;
-  document.querySelectorAll('.option').forEach(b => {
-    b.classList.toggle('selected', Number(b.dataset.opt) === oi);
-  });
-  renderNav();
-}
-
-function selectCell(row, col) {
-  if (state.finished) return;
-  state.answers[state.current][row] = col;
-  document.querySelectorAll('.cell-btn').forEach(b => {
-    if (Number(b.dataset.row) === row) {
-      b.classList.toggle('selected', Number(b.dataset.col) === col);
-    }
-  });
-  renderNav();
-}
-
-function changeMatch(row, value) {
-  if (state.finished) return;
-  const arr = state.answers[state.current];
-  const num = value === '' ? null : Number(value);
-
-  if (num !== null) {
-    for (let k = 0; k < arr.length; k++) {
-      if (k !== row && arr[k] === num) arr[k] = null;
-    }
-  }
-  arr[row] = num;
-
-  document.querySelectorAll('.match-select').forEach(s => {
-    const r = Number(s.dataset.row);
-    s.value = arr[r] === null ? '' : String(arr[r]);
-    s.classList.toggle('has-value', arr[r] !== null);
-  });
-
-  renderNav();
-}
-
-document.addEventListener('click', function (e) {
-  const opt = e.target.closest('.option');
-  if (opt) { selectOption(Number(opt.dataset.opt)); return; }
-
-  const cell = e.target.closest('.cell-btn');
-  if (cell) { selectCell(Number(cell.dataset.row), Number(cell.dataset.col)); return; }
-
-  const navBtn = e.target.closest('.nav-btn');
-  if (navBtn) {
-    state.current = Number(navBtn.dataset.idx);
-    renderQuestion();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    return;
-  }
-});
-
-document.addEventListener('change', function (e) {
-  const sel = e.target.closest('.match-select');
-  if (sel) { changeMatch(Number(sel.dataset.row), sel.value); }
-});
-
-document.addEventListener('input', function (e) {
-  if (e.target.id === 'isianInput') {
-    state.answers[state.current] = e.target.value;
-    renderNav();
-  }
-});
-
-/* ================================================================
-   10. NAVIGASI SOAL
-   ================================================================ */
-document.getElementById('btnPrev').addEventListener('click', function () {
-  if (state.current > 0) {
-    state.current--;
-    renderQuestion();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-});
-
-document.getElementById('btnNext').addEventListener('click', function () {
-  if (state.current < questions.length - 1) {
-    state.current++;
-    renderQuestion();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    confirmFinish();
-  }
-});
-
-document.getElementById('btnFlag').addEventListener('click', function () {
-  const i = state.current;
-  if (state.flagged.has(i)) state.flagged.delete(i);
-  else state.flagged.add(i);
-  this.classList.toggle('active', state.flagged.has(i));
-  renderNav();
-});
-
-document.getElementById('btnFinish').addEventListener('click', confirmFinish);
-
-/* ================================================================
-   11. TIMER
-   ================================================================ */
-function updateTimer() {
-  const el = document.getElementById('timer');
-  const txt = document.getElementById('timerText');
-  const t = Math.max(0, state.timeLeft);
-
-  const h = Math.floor(t / 3600);
-  const m = Math.floor((t % 3600) / 60);
-  const s = t % 60;
-  const pad = n => String(n).padStart(2, '0');
-
-  txt.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
-  el.classList.toggle('warning', t <= 300);
-}
-
-function startTimer() {
-  clearInterval(timerId);
-  timerId = setInterval(function () {
-    if (state.finished) return;
-    state.timeLeft--;
-    updateTimer();
-    if (state.timeLeft <= 0) {
-      state.timeLeft = 0;
-      updateTimer();
-      finishExam(true);
-    }
-  }, 1000);
-}
-
-/* ================================================================
-   12. PENILAIAN
-   ================================================================ */
-function parseCandidates(raw) {
-  const t = String(raw == null ? '' : raw).trim().replace(/\s/g, '');
-  if (t === '') return [];
-  const out = [];
-  const push = v => { if (!isNaN(v) && isFinite(v)) out.push(v); };
-  push(parseFloat(t));
-  push(parseFloat(t.replace(/\./g, '').replace(',', '.')));
-  push(parseFloat(t.replace(/,/g, '')));
-  return out;
-}
-
-function scoreQuestion(q, ans) {
-  if (q.type === 'pg') {
-    return ans === q.answer ? 1 : 0;
-  }
-  if (q.type === 'table') {
-    if (!Array.isArray(ans)) return 0;
-    for (let i = 0; i < q.statements.length; i++) {
-      if (ans[i] !== q.statements[i].answer) return 0;
-    }
-    return 1;
-  }
-  if (q.type === 'match') {
-    if (!Array.isArray(ans)) return 0;
-    let benar = 0;
-    for (let i = 0; i < q.answer.length; i++) {
-      if (ans[i] === q.answer[i]) benar++;
-    }
-    return benar / q.answer.length;
-  }
-  if (q.type === 'isian') {
-    const cands = parseCandidates(ans);
-    return cands.some(v => Math.abs(v - q.answer) < 1e-6) ? 1 : 0;
-  }
-  return 0;
-}
-
-/* ================================================================
-   13. FORMAT JAWABAN UNTUK HASIL
-   ================================================================ */
-function formatUserAnswer(q, a) {
-  if (q.type === 'pg') {
-    if (a === null || a === undefined) return '—';
-    return LETTERS[a] + '. ' + q.options[a];
-  }
-  if (q.type === 'table') {
-    return q.statements.map((st, ri) => {
-      const v = a[ri];
-      return '<div class="mini">' + st.text + ' → <b>' +
-        (v === null || v === undefined ? '—' : q.columns[v]) + '</b></div>';
-    }).join('');
-  }
-  if (q.type === 'match') {
-    return q.premises.map((p, ri) => {
-      const v = a[ri];
-      return '<div class="mini">' + (ri + 1) + '. ' + p + ' → <b>' +
-        (v === null || v === undefined ? '—' : q.options[v]) + '</b></div>';
-    }).join('');
-  }
-  if (q.type === 'isian') {
-    return (a && String(a).trim() !== '') ? escapeHtml(a) : '—';
-  }
-  return '—';
-}
-
-function formatKey(q) {
-  if (q.type === 'pg') {
-    return LETTERS[q.answer] + '. ' + q.options[q.answer];
-  }
-  if (q.type === 'table') {
-    return q.statements.map(st => {
-      return '<div class="mini">' + st.text + ' → <b>' + q.columns[st.answer] + '</b></div>';
-    }).join('');
-  }
-  if (q.type === 'match') {
-    return q.premises.map((p, ri) => {
-      return '<div class="mini">' + (ri + 1) + '. ' + p + ' → <b>' +
-        q.options[q.answer[ri]] + '</b></div>';
-    }).join('');
-  }
-  if (q.type === 'isian') {
-    return String(q.answer) + (q.unit ? ' ' + q.unit : '');
-  }
-  return '—';
-}
-
-/* ================================================================
-   14. SELESAI & HASIL
-   ================================================================ */
-function confirmFinish() {
-  const belum = questions.filter((_, i) => !isAnswered(i)).length;
-  const pesan = 'Yakin ingin menyelesaikan ujian?\n\n' +
-    'Soal terjawab: ' + (questions.length - belum) + ' / ' + questions.length +
-    (belum > 0 ? '\nMasih ada ' + belum + ' soal yang belum lengkap dijawab.' : '') +
-    '\n\nJawaban tidak dapat diubah setelah ujian diselesaikan.';
-
-  if (window.confirm(pesan)) finishExam(false);
-}
-
-function finishExam(auto) {
-  if (state.finished) return;
-  state.finished = true;
-  state.finishedAt = new Date();
-  clearInterval(timerId);
-
-  document.getElementById('timer').classList.remove('warning');
-  document.getElementById('timerText').textContent = 'SELESAI';
-
-  showResult(auto);
-}
-
-function showResult(auto) {
-  const scores = questions.map((q, i) => scoreQuestion(q, state.answers[i]));
-  const total = scores.reduce((a, b) => a + b, 0);
-  const pct = Math.round((total / questions.length) * 100);
-  const benar = scores.filter(s => s >= 0.999).length;
-
-  let predikat, predikatCls;
-  if (pct >= 85) { predikat = 'Sangat Baik'; predikatCls = 'sangat'; }
-  else if (pct >= 70) { predikat = 'Baik'; predikatCls = 'baik'; }
-  else if (pct >= 55) { predikat = 'Cukup'; predikatCls = 'cukup'; }
-  else { predikat = 'Perlu Pembelajaran Lanjutan'; predikatCls = 'kurang'; }
-
-  const namaPeserta = state.name || '—';
-  const tanggalUjian = formatTanggal(state.finishedAt || new Date());
-  const jamSelesai = formatJam(state.finishedAt || new Date());
-
-  let html = '<div class="result">';
-
-  html += '<div class="print-header">';
-  html += '<h2>Hasil Tes Kemampuan Akademik (TKA) - Transformasi, Lingkaran & Pencacahan</h2>';
-  html += '<div class="ph-grid">';
-  html += '<div class="ph-row"><span>Nama Lengkap</span><strong>: ' + escapeHtml(namaPeserta) + '</strong></div>';
-  html += '<div class="ph-row"><span>Mata Pelajaran</span><strong>: ' + SUBJECT.nama + '</strong></div>';
-  html += '<div class="ph-row"><span>Jenjang</span><strong>: ' + SUBJECT.jenjang + '</strong></div>';
-  html += '<div class="ph-row"><span>Kode Paket</span><strong>: ' + SUBJECT.kode + '</strong></div>';
-  html += '<div class="ph-row"><span>Tanggal Ujian</span><strong>: ' + tanggalUjian + '</strong></div>';
-  html += '<div class="ph-row"><span>Selesai Pukul</span><strong>: ' + jamSelesai + '</strong></div>';
-  html += '<div class="ph-row"><span>Skor Akhir</span><strong>: ' + pct + ' / 100 (' + predikat + ')</strong></div>';
-  html += '</div></div>';
-
-  html += '<div class="result-hero">';
-  html += '<div class="score-ring" style="--pct:' + pct + '">' +
-    '<div><span>' + pct + '</span><small>/ 100</small></div></div>';
-
-  html += '<div class="result-info">';
-  html += '<h2>Hasil Ujian' + (auto ? ' (Waktu Habis)' : '') + '</h2>';
-
-  html += '<div class="identity">';
-  html += '<div class="id-row"><span>Nama Lengkap</span><strong>' + escapeHtml(namaPeserta) + '</strong></div>';
-  html += '<div class="id-row"><span>Mata Pelajaran</span><strong>' + SUBJECT.nama + '</strong></div>';
-  html += '<div class="id-row"><span>Jenjang</span><strong>' + SUBJECT.jenjang + '</strong></div>';
-  html += '<div class="id-row"><span>Kode Paket</span><strong>' + SUBJECT.kode + '</strong></div>';
-  html += '<div class="id-row"><span>Tanggal Ujian</span><strong>' + tanggalUjian + '</strong></div>';
-  html += '<div class="id-row highlight"><span>Skor Akhir</span><strong>' + pct + ' / 100</strong></div>';
-  html += '</div>';
-
-  html += '<p>Skor total: <strong>' + (Math.round(total * 10) / 10) + '</strong> dari ' + questions.length + ' soal</p>';
-  html += '<p>Jawaban benar (penuh): <strong>' + benar + '</strong> soal</p>';
-  html += '<span class="predikat ' + predikatCls + '">' + predikat + '</span>';
-  html += '</div></div>';
-
-  html += '<div class="review-title">Rincian Jawaban & Pembahasan</div>';
-
-  questions.forEach((q, i) => {
-    const sc = scores[i];
-    const status = sc >= 0.999 ? 'correct' : (sc > 0 ? 'partial' : 'wrong');
-    const statusText = sc >= 0.999 ? 'Benar' : (sc > 0 ? 'Sebagian Benar' : 'Salah');
-
-    html += '<div class="review-item ' + status + '">';
-    html += '<div class="review-head">';
-    html += '<span class="review-num">Soal ' + (i + 1) + '</span>';
-    html += '<span class="review-status ' + status + '">' + statusText + '</span>';
-    html += '<span class="review-type">' + typeLabel(q.type) + ' · ' + q.topic + '</span>';
-    html += '</div>';
-
-    html += '<div class="review-q">' + q.question + '</div>';
-
-    html += '<div class="answer-grid">';
-    html += '<div class="answer-box user"><b>Jawaban Anda</b>' + formatUserAnswer(q, state.answers[i]) + '</div>';
-    html += '<div class="answer-box key"><b>Kunci Jawaban</b>' + formatKey(q) + '</div>';
-    html += '</div>';
-
-    if (q.pembahasan) {
-      html += '<div class="pembahasan"><b>Pembahasan:</b> ' + q.pembahasan + '</div>';
-    }
-    html += '</div>';
-  });
-
-  html += '<div class="result-actions">';
-  html += '<button class="btn btn-primary" onclick="window.location.reload()">Ulangi Ujian</button>';
-  html += '<button class="btn btn-ghost" onclick="window.print()">Cetak Hasil</button>';
-  html += '</div>';
-
-  html += '</div>';
-
-  const layout = document.getElementById('layout');
-  layout.innerHTML = '<section class="content" style="grid-column:1/-1">' + html + '</section>';
-
-  typeset(layout);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-/* ================================================================
-   15. MULAI UJIAN
-   ================================================================ */
-const inputName = document.getElementById('inputName');
-const nameError = document.getElementById('nameError');
-
-function clearNameError() {
-  inputName.classList.remove('error');
-  nameError.classList.remove('show');
-}
-
-inputName.addEventListener('input', clearNameError);
-
-inputName.addEventListener('keydown', function (e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    startExam();
-  }
-});
-
-function startExam() {
-  const nama = inputName.value.trim().replace(/\s+/g, ' ');
-
-  if (!nama) {
-    inputName.classList.add('error');
-    nameError.classList.add('show');
-    inputName.focus();
-    return;
-  }
-
-  clearNameError();
-  state.name = nama;
-  state.startedAt = new Date();
-
-  const initial = nama.charAt(0).toUpperCase();
-  document.getElementById('userName').textContent = nama;
-  document.getElementById('userAvatar').textContent = initial;
-  document.getElementById('userChip').style.display = 'flex';
-
-  document.getElementById('sideName').textContent = nama;
-  document.getElementById('sideAvatar').textContent = initial;
-  document.getElementById('sidePeserta').style.display = 'flex';
-
-  document.getElementById('startOverlay').classList.add('hidden');
-  state.started = true;
-  state.timeLeft = TOTAL_SECONDS;
-  updateTimer();
-  startTimer();
-  renderQuestion();
-}
-
-document.getElementById('btnStart').addEventListener('click', startExam);
-
-/* ================================================================
-   16. BOOTSTRAP
-   ================================================================ */
-(function boot() {
-  initAnswers();
-  updateTimer();
-  renderNav();
-
-  document.querySelectorAll('.copy-year').forEach(function (el) {
-    el.textContent = new Date().getFullYear();
-  });
 })();
 </script>
-
 </body>
 </html>
